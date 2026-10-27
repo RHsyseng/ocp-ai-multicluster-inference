@@ -1,0 +1,7 @@
+name: "3.6"
+title: LAB - OCP AI Multicluster Inference
+version: ~
+nav:
+  - modules/ROOT/nav.adoc
+
+start_page: ROOT:welcome.adoc
