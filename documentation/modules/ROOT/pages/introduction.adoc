@@ -1,41 +1,40 @@
 = Introduction
 include::_attributes.adoc[]
-:profile: 5g-ran-lab
+:profile: ocp-ai-multicluster-inference
 
-Welcome to this lab focused on deploying 5G RAN on OpenShift, designed to enhance your understanding and practical skills.
+Welcome to this lab focused on AI multicluster inference using OpenShift AI, designed to enhance your understanding and practical skills.
 
-The first part of this lab introduces the essential concepts for planning and executing a 5G RAN Deployment on OpenShift. The second part involves a practical scenario where you will deploy RAN-enabled OCP using ZTP technologies and methodologies.
+The first part of this lab introduces the essential concepts for planning and executing an AI multicluster inference deployment on OpenShift. The second part involves practical scenario where you will configure the inference infrastructure to support distributed multicluster inference requests.
 
 [#lab-aim]
 == Who Is This Lab Aimed At?
 
-The lab is aimed at technical profiles working with OpenShift who are interested in any of these areas:
+Technical profiles working with OpenShift AI who want to:
 
-* Professionals interested in managing cluster fleets using GitOps methodologies.
-* Working with telecom customers/partners in projects involving RAN workloads.
+- Operate an **inference cluster fleet** to offer shared inference services.
+- Work with **service providers** (telcos, neoclouds, sovereign operators) offering **inference as a service**.
 
 [#what-you-will-achieve]
 == What You Will Achieve
 
-This lab provides a comprehensive, hands-on journey into deploying and managing **5G Radio Access Network (RAN) workloads on OpenShift**, with a strong focus on automation and scalability for Telco environments. By completing this lab, you will achieve the following:
+By completing this lab you will be able to:
 
-• **Understand Foundational 5G RAN Concepts:** Gain insights into critical Telco requirements such as NUMA Nodes, Huge Pages, CPU Pinning, SR-IOV, and PTP, and learn how these are addressed within the OpenShift platform to optimize performance for RAN workloads.
-• **Explore Telco-Specific OpenShift Operators:** Learn about the purpose and application of essential operators, including the Node Tuning Operator, SR-IOV Operator, PTP Operator, Accelerator Operators, and the Lifecycle Agent Operator, for configuring OpenShift to meet 5G RAN demands.
-• **Master Zero Touch Provisioning (ZTP) and OpenShift GitOps:** Understand the principles of Zero Touch Provisioning (ZTP) and OpenShift GitOps for efficiently deploying and managing Single Node OpenShift (SNO) clusters at scale. This includes leveraging Red Hat Advanced Cluster Management (RHACM) and its key components like the SiteConfig Operator, Image Based Install Operator, GitOps Operator, and Topology Aware Lifecycle Manager (TALM).
-• **Deploy SNO Clusters with Advanced Methods:** Practically deploy Single Node OpenShift (SNO) clusters using both Agent Based Installation and Image Based Installation methods. You will configure these clusters with specialized 5G RAN Profiles that include crucial settings such as Workload Partitioning, Kubelet Tuning, and SCTP.
-• **Perform Image-Based Upgrades at Scale:** Learn how to generate seed images from an OpenShift Seed SNO Cluster and execute image-based upgrades for SNO clusters, understanding the efficient workflow for managing updates across numerous sites.
-• **Utilize the Lab Environment's Dedicated Infrastructure:** Become proficient in interacting with the lab's key components, including the Git Server (Gitea), Container Registry, OpenShift Hub Cluster, HTTP Server for serving local RHCOS images, and S3 Storage Server for backup/restore operations.
-• **Build and Deploy a ZTP GitOps Pipeline:** Prepare and deploy a complete ZTP GitOps pipeline, crafting Telco RAN Reference Design Specification policies (Common, Group, and Site Policies) to automate cluster configuration and deployment.
-• **Monitor and Troubleshoot Deployments:** Gain experience in monitoring SNO cluster deployments via both WebUI and CLI, and learn common troubleshooting tips for ensuring smooth operations.
-This comprehensive journey will equip you with the knowledge and practical skills necessary to design, deploy, and manage highly optimized 5G RAN deployments on OpenShift in real-world Telco environments.
+- Understand foundational multicluster AI inference concepts.
+- Explore the OpenShift AI and Praxis AI Grid components involved.
+- Deploy and expose generative AI models across clusters.
+- Build an inference grid by onboarding inference clusters.
+- Configure smart routing policies at the AI Gateway.
+- Onboard tenants into the multicluster inference platform.
+- Consume models through a single, stable endpoint from real workloads.
+- Monitor usage, routing decisions, and platform health.
+- Troubleshoot the deployment.
+
+This comprehensive journey will equip you with the knowledge and practical skills necessary to operate an AI multicluster inference platform built on OpenShift AI.
 
 [#lab-software-versions]
 == Lab Software Versions
 
 The lab is based on the following software versions:
 
-* HUB Cluster OpenShift {hub-cluster-ocp-version}.
-* SNO Cluster OpenShift {sno-cluster-version1} and {sno-cluster-version2}.
-* RHACM {rhacm-version}.
-* MCE {mce-version}.
-* PolicyGenTool {policygentool-version}.
+* OpenShift {ocp-clusters-version}.
+* OpenShift AI {ocp-ai-version}.

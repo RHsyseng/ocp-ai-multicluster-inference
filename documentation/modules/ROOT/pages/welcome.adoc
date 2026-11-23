@@ -1,13 +1,27 @@
-= Welcome to the Red Hat Lab 5G RAN RDS Deployments on OpenShift
+= Welcome to the Red Hat Lab - AI Multicluster Inference on OpenShift
 :!sectids:
 
 [.text-center.strong]
-[#5g-ran-lab]
-== Red Hat Lab - 5G RAN RDS Deployments on OpenShift
+[#ocp-ai-multicluster-inference-lab]
+== Red Hat Lab - AI Multicluster Inference on OpenShift
 
-This lab will guide you through the deployment of a RAN ready infrastructure following the Reference Design Specification (RDS) crafted by the Red Hat CNF team. The lab consists of two parts, the first part introduces essential concepts for planning and executing a 5G RAN Deployment on OpenShift. The second part involves a practical scenario where you will deploy RAN-enabled OCP using ZTP technologies and methodologies.
+This lab guides you through configuring and operating an **AI multicluster
+inference** platform built on Red Hat OpenShift AI (RHOAI). It is delivered
+through the **Showroom** environment: lab content on the left, and the lab
+environment (terminals and a web browser) on the right.
 
-IMPORTANT: This is not an official Red Hat Training. Please, contact with your Red Hat representative if you want more information about Training or Guidelines about this topic / product.
+The lab has two parts:
+
+- **Part one (theory)** introduces the concepts needed to plan and reason about a
+  distributed, multi-cluster inference deployment: the architecture, how routing
+  works across clusters, the components involved, the personas, identity, and the
+  tenancy model.
+- **Part two (hands-on)** walks through building the platform: onboarding
+  inference clusters into a grid, deploying models, configuring smart routing,
+  onboarding tenants, and testing the end-to-end experience through a single
+  endpoint.
+
+IMPORTANT: This is not official Red Hat Training. Contact your Red Hat representative for training or product guidance.
 
 ifeval::["{demo_environment}" == "true"]
 You have been provided with a lab environment ready for you to use for the second part of the lab. Please note that running this lab incurs a cost of approximately $56. When the lab is launched, by default you will have 12 hours to complete it before it is destroyed. The estimated total duration for completing the lab is approximately 12 hours, including 2 hours for provisioning, 5 hours for hands-on work, and a 5-hour buffer. If additional time is required, the duration can be manually extended up to a maximum of 24 hours.
@@ -79,55 +93,25 @@ image::showroom-app-9.png[Showroom App Web Browser Clipboard]
 |===
 |Name |Role
 
-|Alberto Losada
+|Karim Boumedhel
 |Lab Developer / Maintainer
-
-|Ian Miller
-|Lab Reviewer / CNF Developer
-
-|Juan Carlos Tovar
-|Lab Reviewer
 
 |Mario Vázquez
 |Lab Developer / Maintainer
 
 |===
 
-[#past-contributors]
-== Past Lab Contributors
-
-[cols="1,1"]
-|===
-|Name |Role
-
-|Alberto Losada
-|Lab Developer / Maintainer
-
-|Ethan Siegel
-|Lab Contributor
-
-|Ian Miller
-|Lab Contributor / CNF Developer
-
-|Mario Vázquez
-|Lab Developer / Maintainer
-
-|Leo Ochoa
-|Lab Reviewer
-
-|Scott Collier
-|Lab Reviewer
-
-|Rob Fisher
-|Lab Reviewer
-
-|Federico Ferrando
-|Lab Reviewer
-
-|Daniel Munné
-|Lab Reviewer
-
-|John Herr
-|Lab Reviewer
-
-|===
+//[#past-contributors]
+//== Past Lab Contributors
+//
+//[cols="1,1"]
+//|===
+//|Name |Role
+//
+//|Karim Boumedhel
+//|Lab Developer / Maintainer
+//
+//|Mario Vázquez
+//|Lab Developer / Maintainer
+//
+//|===

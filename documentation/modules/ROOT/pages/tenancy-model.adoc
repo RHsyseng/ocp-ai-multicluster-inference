@@ -1,0 +1,22 @@
+= Tenancy Model
+include::_attributes.adoc[]
+:profile: ocp-ai-multicluster-inference
+
+An **organization** is the customer (tenant) boundary. Organizations consume entitled models through one shared platform.
+
+In RHOAI {ocp-mc-mvp-version}, all organizations share a **single AI Gateway** (organizations are isolated by their provider-issued, group-scoped subscriptions rather than by a gateway of their own). A dedicated per-organization gateway is not available in RHOAI {ocp-mc-mvp-version} and is expected in a later release.
+
+[#tenancy-subscriptions]
+== Provider-issued subscriptions and entitlements
+
+- The provider issues the **subscription** that defines an organization's entitled models and documented service limits (such as token limits).
+- Subscriptions are bound to **groups**. A user's group claims determine which subscriptions, and therefore which models, they can use.
+- The Organization Admin **reviews** this provider-issued boundary but does not change its limits. Changing entitlements is a provider action.
+
+[#tenancy-isolation]
+== Isolation and the governance boundary
+
+- The grid evaluates each request within the supported organization, subscription, group, and entitlement boundaries **before** selecting an eligible cluster. A request that is not entitled is **not** routed to a destination outside the organization's access boundary.
+- An Organization Admin sees only their own organization's access information. One organization cannot view another's models or usage.
+
+IMPORTANT: Tenancy isolation here is enforced at the gateway, identity, and authorization layers, not at the network layer. KV cache is also hashed per user.

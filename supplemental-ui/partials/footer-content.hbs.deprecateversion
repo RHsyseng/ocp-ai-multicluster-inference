@@ -80,7 +80,7 @@
     </div>
     <div class="modal-body">
       <p>You're searching and old version of the lab.</p>
-      <p><a id="newlaburl" href="https://github.com/RHsyseng/5g-ran-deployments-on-ocp-lab/">Go to latest</a></p>
+      <p><a id="newlaburl" href="https://github.com/RHsyseng/ocp-ai-multicluster-inference/">Go to latest</a></p>
     </div>
   </div>
 
@@ -99,7 +99,7 @@ span.onclick = function() {
 }
 
 function getLatestLabURL(){
-  const repoUrl = 'https://api.github.com/repos/RHsyseng/5g-ran-deployments-on-ocp-lab';
+  const repoUrl = 'https://api.github.com/repos/RHsyseng/ocp-ai-multicluster-inference';
   return fetch(repoUrl)
   .then(response => response.json())
   .then(data => {
@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', function () {
   latestLabURLPromise.then(latestLabURL => {
     if(latestLabURL != "notFound") {
       var newLabUrl = document.getElementById("newlaburl");
-      newLabUrl.href = "https://labs.sysdeseng.com/5g-ran-deployments-on-ocp-lab/"+latestLabURL.replace("lab-","")+"/index.html"
+      newLabUrl.href = "https://labs.sysdeseng.com/ocp-ai-multicluster-inference/"+latestLabURL.replace("lab-","")+"/index.html"
     }
   });
   modal.style.display = 'block';

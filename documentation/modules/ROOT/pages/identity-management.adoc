@@ -1,0 +1,57 @@
+= Identity Management
+include::_attributes.adoc[]
+:profile: ocp-ai-multicluster-inference
+
+In the OpenShift AI {ocp-ai-version} organization onboarding model, identity is federated **per organization**. Each organization integrates its **own** identity provider (via OpenID Connect), and from there it can onboard its users into the platform.
+
+[#tenant-identity-onboarding]
+== Organization onboarding and identity integration
+
+Identity is bootstrapped by the cloud provider and then handed over to the organization:
+
+1. **The provider onboards the organization**: Onboarding creates an **Organization Admin breakglass account** (an initial, provider-issued credential for the Organization Admin).
+2. **The Organization Admin onboards their organization**: Using the breakglass account, the Organization Admin connects the organization's own identity provider through **OpenID Connect (OIDC)**.
+3. **The organization manages its own identity**: From then on, the organization handles user management, groups, and membership entirely in **its own IdP**. The provider does not manage the organization's users or groups.
+4. **Each organization has its own integration**: Every organization connects its own IdP independently of the other organizations on the platform.
+
+NOTE: Providing and maintaining the IdP, the OIDC integration, and the organization's users and groups are **organization responsibilities**. The provider is responsible for onboarding the organization, issuing the breakglass account, and issuing the organization's subscriptions and entitlements.
+
+[#breakglass]
+=== The breakglass account
+
+The Organization Admin breakglass account is **not deleted** after the organization connects its IdP. It is retained as a **recovery mechanism**: if the organization's IdP integration fails or access is otherwise lost, the breakglass account can be used to regain access to the organization and repair the integration.
+
+NOTE: Treat the breakglass account as a privileged credential. Store it securely and reserve it for recovery scenarios; day-to-day access should go through the organization's own IdP.
+
+[#identity-sign-in-keys]
+== Sign-in and API keys
+
+- An Organization User signs in through the organization's own IdP (OIDC). The IdP passes the user's group claims, which MaaS uses together with the provider-issued subscriptions and access policies to decide which models the user can access.
+- After signing in, a user can create API keys and use them for authorized inference requests.
+- API key secrets are never displayed in the administration view; only metadata (name, status, subscription, owner, creation/last-used/expiration dates) is shown.
+
+IMPORTANT: Protecting, creating, using, and revoking keys follows the canonical MaaS API-key lifecycle.
+
+[#identity-auth-layers]
+== Authentication layers
+
+A request crosses more than one trust boundary, and they must not be conflated:
+
+[cols="1,2,2"]
+|===
+|Layer |What it authenticates |Who owns it
+
+|External caller
+|The Organization User or application (API key)
+|Enforced at the gateway, before routing.
+
+|Cross-cluster destination
+|The platform authenticating to a selected inference cluster
+|A platform responsibility, not an application workflow.
+
+|Backend / serving
+|The inference cluster's local model-serving authorization
+|The cloud provider (serving cluster).
+|===
+
+The caller's credential is an application access credential (it is not forwarded as a destination credential). Applications do not manage a separate credential per cluster. For the certificate and mTLS details behind the cross-cluster layer, see xref:components-breakdown.adoc#agn-pki[Grid PKI].

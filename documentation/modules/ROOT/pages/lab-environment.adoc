@@ -1,597 +1,439 @@
 = Lab Environment
 include::_attributes.adoc[]
-:profile: 5g-ran-lab
+:profile: ocp-ai-multicluster-inference
 
 This section describes how to deploy your own lab environment.
 
-CAUTION: If you are a Red Hatter, you can order a lab environment on the https://demo.redhat.com[Red Hat Demo Platform]. You just need to order the lab named `5G RAN Deployment on OpenShift`.
+CAUTION: If you are a Red Hatter, you can order a lab environment on the https://demo.redhat.com[Red Hat Demo Platform]. You just need to order the lab named `5G RAN RDS Deployments on OpenShift`.
+
+IMPORTANT: For lab versions 4.19 and later, deploying the lab in your local environment can be done using the https://github.com/RHsyseng/agnosticd/tree/development/ansible/roles_ocp_workloads/ocp4_workload_5gran_deployments_lab[ocp4_workload_5gran_deployments_lab] Ansible role that is actually the same used for on-demand requests on the https://demo.redhat.com[Red Hat Demo Platform]. If you prefer a step-by-step deployment, refer to https://labs.sysdeseng.com/5g-ran-deployments-on-ocp-lab/4.18/lab-environment.html[previous lab versions] for guidance.
 
 [#lab-requirements]
 == Lab Requirements
 
 RHEL 9.X box with access to the Internet. This lab relies on KVM, so you need to have the proper virtualization packages already installed. It is highly recommended to use a bare-metal host. Our lab environment has the following specs:
 
-* 64 cores in total, with or without hyperthreading enabled.
-* 200GiB Memory.
+* 96 cores in total, with or without hyperthreading enabled.
+* 128GiB Memory.
 * 1 TiB storage.
 
 IMPORTANT: The /opt directory requires a minimum of 60 GiB of storage for the disconnected registry installation and the /var directory requires a minimum of 70 GiB for the lab installation.
 Size the filesystems containing these directories accordingly as the default partition layout for a RHEL 9.X install does not provide enough storage on the root filesystem for the lab installation.
 
-IMPORTANT: These instructions have been tested in a RHEL 9.4, we cannot guarantee that other operating systems (even RHEL-based) will work. We won't be providing support out of RHEL 9.
+IMPORTANT: These instructions have been tested in a RHEL 9.6, we cannot guarantee that other operating systems (even RHEL-based) will work. We won't be providing support out of RHEL 9.
 
-These are the steps to install the required packages on a RHEL 9.4 server:
+[#role-overview]
+== OCP4 5G RAN Role Overview
 
-[.console-input]
-[source,bash,subs="attributes+,+macros"]
------
-dnf -y install libvirt libvirt-daemon-driver-qemu qemu-kvm
-usermod -aG qemu,libvirt $(id -un)
-newgrp libvirt
------
+This role https://github.com/RHsyseng/agnosticd/tree/development/ansible/roles_ocp_workloads/ocp4_workload_5gran_deployments_lab[ocp4_workload_5gran_deployments_lab] installs the 5G RAN RDS Deployments Lab environment. It consists of the following tasks files:
 
-[.console-input]
-[source,bash,subs="attributes+,+macros"]
------
-systemctl enable libvirtd --now
------
+* The https://github.com/RHsyseng/agnosticd/blob/development/ansible/roles_ocp_workloads/ocp4_workload_5gran_deployments_lab/tasks/pre_workload.yml[pre_workload.yml] file contains the initial setup and preparation.
+* The https://github.com/RHsyseng/agnosticd/blob/development/ansible/roles_ocp_workloads/ocp4_workload_5gran_deployments_lab/tasks/workload.yml[workload.yml] file contains the main deployment tasks that create and configures the lab.
+* The https://github.com/RHsyseng/agnosticd/blob/development/ansible/roles_ocp_workloads/ocp4_workload_5gran_deployments_lab/defaults/main.yml[defaults/main.yml] file contains the default configuration variables for the 5G RAN lab deployment.
+* The `run-role.yaml` file is the playbook that runs the role along with the variables customized for you environment.
+* The `inventory` file contains the hypervisor where the lab is going to be deployed.
 
-NOTE: Verfiy tha the libvirtd systemd service is running successfully by executing `systemctl status libvirtd`.
+IMPORTANT: There are variables that might be adjusted for your environment. They can be included as variables in the ansible-playbook command-line, however, we suggest to be added in the `run-role.yaml` Ansible playbook.
 
-[#lab-deployment]
-== Lab Deployment
+Let's dive into the different files:
 
-IMPORTANT: All the steps in the below sections must be run as `root` user on the hypervisor host.
+[#inventory]
+== Inventory FIle
 
-[#install-kcli]
-=== Install kcli
-
-We use https://github.com/karmab/kcli[kcli] to do several things, like managing VMs, deploying the first OCP cluster, etc. Additional kcli documentation can be found at `https://kcli.readthedocs.io`
-
-IMPORTANT: Below commands must be executed from the hypervisor host as root if not specified otherwise.
+The inventory includes the IP address of the hypervisor. Here you can see an example of the inventory file for my lab:
 
 [.console-input]
 [source,bash,subs="attributes+,+macros"]
 -----
-dnf -y install bash-completion vim jq tar git ipcalc pip {kcli-rpm}
-pip install pyopenssl
+[bastions]
+10.6.76.211 public_dns_name=10.6.76.211
 -----
 
-[#install-oc-kubectl]
-=== Install oc/kubectl CLIs
+[#playbook-run-role]
+== The Playbook
+
+The `run-role.yaml` playbook basically includes the `ocp4_workload_5gran_deployments_lab` Ansible role and adjustes the variables to the proper environment where the lab is about to be deployed.
+
+The following playbook probably will just work for you except for the `ocp4_pull_secret` which has to be replaced by your personal OpenShift Pull Secret. Notice that the default upstream DNS is set to 1.1.1.1. There might be cases in your local environment where the hypervisor may not reach it. So, notice that you must change it to a different DNS that allows you to resolve public hostnames.
+
+CAUTION: The variables that includes the `do not change` comment as set explicitly this way because the deployment we want here is on a local hypervisor.
 
 [.console-input]
 [source,bash,subs="attributes+,+macros"]
 -----
-kcli download oc -P version=stable -P tag='{kcli-tools-tag}'
-kcli download kubectl -P version=latest -P tag='{kcli-tools-tag}'
-mv kubectl oc /usr/bin/
+- name: telco 5G lab
+  hosts: 10.6.76.211
+  vars:
+    repo_user: RHsyseng
+    platform_demo_redhat_com: false #do not change
+    disconnected_update: true #do not change
+    download_rhcos_isos: true #do not change
+    install_lab_dependencies: true #do not change
+    lab_version: "lab-4.19"
+    student_name: "lab-user"
+    student_password: "redhat123"
+    hypervisor_min_memory_mb: 128000
+    hypervisor_min_cpus: 96
+    lab_hub_vm_memory: 22000
+    lab_hub_vm_disk: 120
+    lab_sno_vm_memory: 22000
+    lab_sno_vm_disk: 120
+    #upstream_dns: "10.6.73.2"
+    upstream_dns: "1.1.1.1"
+    ACTION: provision
+    ocp4_pull_secret: 'YOUR_PULL_SECRET'
+  roles:
+    - role: ocp4_workload_5gran_deployments_lab
 -----
 
-[#configure-disconnected-network]
-=== Configure Disconnected Networks
+First, clone the `RHSyseng` GitHub repo:
 
 [.console-input]
 [source,bash,subs="attributes+,+macros"]
 -----
-kcli create network -c 192.168.125.0/24 -P dns=false -P dhcp=false --domain 5g-deployment.lab 5gdeploymentlab
-kcli create network -c 192.168.100.0/24 -P dhcp=false -P dns=false --domain sriov-network.lab -i sriov-network
-kcli create network -c 192.168.200.0/24 -P dhcp=false -P dns=false --domain ptp-network.lab -i ptp-network
+$ git clone https://github.com/RHsyseng/agnosticd.git
+$ cd agnosticd/ansible/roles_ocp_workload
 -----
 
-[#configure-local-dns-dhcp-server]
-=== Configure Local DNS/DHCP Server
-
-ifeval::["{demo_environment}" != "true"]
-NOTE: If you're using MacOS and you're getting errors while running `sed -i` commands, make sure you are using `gsed`: `brew install gnu-sed`.
-endif::[]
+Next, create the inventory file in that path. Copy and paste the `run-role.yaml` playbook shown previously. Finally run the playbook:
 
 [.console-input]
 [source,bash,subs="attributes+,+macros"]
 -----
-dnf -y install dnsmasq policycoreutils-python-utils
-mkdir -p /opt/dnsmasq/include.d/
-curl -sL https://raw.githubusercontent.com/{repo_user}/5g-ran-deployments-on-ocp-lab/{branch}/lab-materials/lab-env-data/dnsmasq/dnsmasq.conf -o /opt/dnsmasq/dnsmasq.conf
-curl -sL https://raw.githubusercontent.com/{repo_user}/5g-ran-deployments-on-ocp-lab/{branch}/lab-materials/lab-env-data/dnsmasq/upstream-resolv.conf -o /opt/dnsmasq/upstream-resolv.conf
-curl -sL https://raw.githubusercontent.com/{repo_user}/5g-ran-deployments-on-ocp-lab/{branch}/lab-materials/lab-env-data/dnsmasq/hub.ipv4 -o /opt/dnsmasq/include.d/hub.ipv4
-curl -sL https://raw.githubusercontent.com/{repo_user}/5g-ran-deployments-on-ocp-lab/{branch}/lab-materials/lab-env-data/dnsmasq/sno1.ipv4 -o /opt/dnsmasq/include.d/sno1.ipv4
-curl -sL https://raw.githubusercontent.com/{repo_user}/5g-ran-deployments-on-ocp-lab/{branch}/lab-materials/lab-env-data/dnsmasq/sno2.ipv4 -o /opt/dnsmasq/include.d/sno2.ipv4
-curl -sL https://raw.githubusercontent.com/{repo_user}/5g-ran-deployments-on-ocp-lab/{branch}/lab-materials/lab-env-data/dnsmasq/infrastructure-host.ipv4 -o /opt/dnsmasq/include.d/infrastructure-host.ipv4
-curl -sL https://raw.githubusercontent.com/{repo_user}/5g-ran-deployments-on-ocp-lab/{branch}/lab-materials/lab-env-data/dnsmasq/dnsmasq-virt.service -o /etc/systemd/system/dnsmasq-virt.service
-touch /opt/dnsmasq/hosts.leases
-semanage fcontext -a -t dnsmasq_lease_t /opt/dnsmasq/hosts.leases
-restorecon /opt/dnsmasq/hosts.leases
-sed -i "s/UPSTREAM_DNS/1.1.1.1/" /opt/dnsmasq/upstream-resolv.conf
-systemctl daemon-reload
-systemctl enable dnsmasq-virt
-systemctl mask dnsmasq
+$ ansible-playbook -i inventory run-role.yml -u root -k  -v
 -----
 
-Before starting dnsmasq-virt service we must set the proper SELinux attributes to the files that have been downloaded.
+Notice that the Ansible playbook uses the mentioned role to deploy the lab. The role is divided into 2 main stages: `pre-workload` and `workload` tasks:
+
+[#preworkload-tasks-overview]
+== Pre-Workload Tasks Overview
+
+The https://github.com/RHsyseng/agnosticd/blob/development/ansible/roles_ocp_workloads/ocp4_workload_5gran_deployments_lab/tasks/pre_workload.yml[ pre_workload.yml] file contains the initial setup and preparation tasks that must be completed before deploying the 5G RAN RDS lab environment. This file ensures your hypervisor is properly configured with all necessary dependencies, services, and infrastructure components.
+
+[#what-preworkload-does]
+=== What Pre-Workload Does
+
+The pre-workload phase prepares your RHEL 9 hypervisor by:
+
+1. System Validation & Requirements Check
+* *Validates pull secret*: Ensures OpenShift pull secret is provided.
+* *Checks system resources*: Verifies minimum memory (128GB+), CPU cores (64+), and supported OS.
+* *Displays system facts*: Shows current system specifications vs. requirements.
+* *Validates distribution*: Confirms RHEL 9, CentOS 9, or Fedora compatibility.
+
+2. Storage Configuration
+* *Identifies extra disk*: Finds available disk (500GB+) for libvirt storage.
+* *Creates XFS filesystem*: Formats the selected disk with XFS.
+* *Mounts libvirt storage*: Mounts extra disk to `/var/lib/libvirt` for VM storage.
+* *Sets up storage pools*: Creates kcli storage pools for VM management.
+
+3. Dependency Installation
+* *Installs virtualization packages*: libvirt, qemu-kvm, podman, dnsmasq.
+* *Installs Python modules*: kubernetes, passlib, pyopenssl, cherrypy, firewall, minio.
+* *Downloads OpenShift tools*: oc, kubectl, openshift-installer binaries.
+* *Installs kcli*: Virtualization management tool for VM operations.
+
+4. Network Infrastructure Setup
+* *Creates lab networks*:
+  - Main lab network (192.168.125.0/24)
+  - SR-IOV network (192.168.100.0/24)
+  - PTP network (192.168.200.0/24)
+* *Configures DNSMasq*: Sets up local DNS resolution for lab domains.
+* *Configures NetworkManager*: Ensures proper DNS resolution.
+* *Sets up firewall rules*: Opens required ports for lab services.
+
+5. Container Registry Services
+* *Deploys disconnected registry*: Podman-based container registry on port 8443.
+* *Configures registry authentication*: Sets up admin credentials.
+* *Sets up SSL certificates*: Configures trusted certificates for registry access.
+
+6. S3 Storage (MinIO)
+* *Deploys MinIO service*: Object storage service on port 9002.
+* *Creates storage buckets*: Sets up buckets for backup and logging.
+* *Configures S3 client*: Installs and configures `mc` client.
+* *Sets up aliases*: Configures MinIO access credentials.
+
+7. Git Server (Gitea)
+* *Deploys Gitea service*: Git server on port 3000.
+* *Creates admin user*: Sets up student user with admin privileges.
+* *Migrates repositories*: Clones lab repository from GitHub to local Git (Gitea).
+
+8. Web Cache Service
+* *Deploys web cache server*: Podman-based caching service on port 8080.
+* *Downloads RHCOS images*: Downloads OpenShift CoreOS images (if enabled).
+
+9. Redfish Service (ksushy)
+* *Deploys ksushy service*: Redfish API service on port 9000.
+* *Configures BMC simulation*: Simulates bare metal management interface.
+
+10. Lab VM Preparation
+* *Creates VM definitions*: Prepares SNO seed, ABI, and IBI VMs.
+* *Configures VM resources*: Sets CPU, memory, and disk allocations.
+* *Sets up networking*: Configures VM network interfaces.
+* *Prepares for deployment*: VMs are created but not started.
+
+11. Lab Content Generation
+* *Clones lab repository*: Downloads lab documentation and materials.
+* *Generates documentation*: Builds lab documentation using Antora.
+* *Sets up showroom*: Creates web interface for lab access.
+
+[#key-services-deployed]
+=== Key Services Deployed
+
+[cols="2,1,3,2",options="header"]
+|===
+| Service | Port | Purpose | Credentials
+
+| *Container Registry*
+| 8443
+| Stores OpenShift images
+| `admin / r3dh4t1!`
+
+| *Git Server (Gitea)*
+| 3000
+| Lab repository access
+| `student / student`
+
+| *S3 Storage (MinIO)*
+| 9002
+| Object storage
+| `admin / admin1234`
+
+| *Web Cache*
+| 8080
+| Image caching
+| -
+
+| *Redfish API*
+| 9000
+| BMC simulation
+| -
+
+| *Lab Showroom*
+| 80
+| Lab documentation
+| `lab-user / redhat123`
+|===
+
+[#preworkload-troubleshooting]
+=== Troubleshooting
+
+If pre-workload fails, check:
+
+* *System resources*: Ensure minimum memory/CPU requirements.
+* *Internet connectivity*: Required for downloading dependencies.
+* *Pull secret*: Must be valid OpenShift pull secret.
+* *Disk space*: Ensure sufficient storage for libvirt.
+
+[#preworkload-time]
+=== Time Requirements
+
+CAUTION: This is a estimation based on our experience and our environment.
+
+* *Typical duration*: 30-45 minutes.
+* *Slow internet*: 45-60 minutes.
+
+IMPORTANT: The pre-workload phase is essential for creating a properly configured environment that can successfully deploy and run the 5G RAN lab workloads.
+
+[#workload-tasks-overview]
+== Workload Tasks Overview
+
+The `workload.yml` file contains the main deployment tasks that create and configure the 5G RAN lab environment. This file deploys OpenShift clusters, installs operators, and configures the infrastructure needed for 5G workloads.
+
+[#what-workload-does]
+=== What Workload Does
+
+The workload phase deploys the complete 5G RAN lab environment by:
+
+1. Hub Cluster Deployment
+* *Deploys hub cluster*: Creates a compact OpenShift cluster.
+* *Downloads manifests*: Retrieves Kubernetes manifests for hub cluster configuration.
+* *Establishes connectivity*: Logs into the hub cluster and copies kubeconfig.
+
+2. Hub Cluster Configuration
+* *Removes kubeadmin*: Deletes the default kubeadmin user for security.
+* *Configures ArgoCD*: Patches ArgoCD for Zero Touch Provisioning (ZTP) support.
+* *Waits for ArgoCD*: Ensures ArgoCD pods are running and ready before proceeding to the next tasks.
+
+3. Hub Cluster Operators Installation
+* *Deploys hub operators*: Installs operators via ArgoCD applications.
+* *Configures LVM storage*: Sets up LVMCluster for persistent storage.
+* *Waits for operator readiness*: Ensures all hub operators are healthy and synced before proceeding to the next tasks.
+
+4. Multi-Cluster Management Setup
+* *Installs MultiClusterHub*: Deploys Red Hat Advanced Cluster Management.
+* *Configures MultiClusterEngine*: Sets up multi-cluster management capabilities.
+* *Waits for readiness*: Ensures MCH and MCE are running and available before continue.
+
+5. SNO Seed Cluster Deployment
+* *Deploys SNO cluster**: Creates Single Node OpenShift cluster via ArgoCD.
+* *Extracts kubeconfig**: Retrieves SNO cluster kubeconfig for management.
+
+6. SNO Seed Cluster Operators Installation
+* *Downloads operator manifests*: Retrieves manifests for telco-specific operators.
+* *Installs operators*: Deploys OADP, LCA, LVMS, SR-IOV, Logging, and PTP operators.
+* *Verifies operator status*: Confirms operators are in "Succeeded" state before continue.
+
+7. SNO Seed Network Configuration
+* *Configures SR-IOV*: Sets up Single Root I/O Virtualization for high-performance networking.
+* *Configures PTP*: Sets up Precision Time Protocol for time synchronization.
+* *Configures Logging*: Sets up cluster logging for observability.
+
+8. SNO Seed Performance Optimization
+* *Applies performance profile*: Configures CPU isolation and NUMA topology.
+* *Applies Tuned patches*: Optimizes system performance for telco workloads.
+* *Prepares for reboot*: Indicates node reboot is required for performance tuning.
+
+[#workload-key-components]
+=== Key Components Deployed
+
+For Hub Cluster Components:
+
+* *OpenShift Cluster*: Full OpenShift 4.19 cluster.
+* *ArgoCD*: GitOps continuous deployment.
+* *LVM Storage*: Persistent storage solution.
+* *Multi-Cluster Management*: Red Hat Advanced Cluster Management.
+* *Multi-Cluster Engine*: Multi-cluster orchestration.
+
+For SNO Cluster Components:
+
+* *Single Node OpenShift*: Edge-optimized OpenShift cluster.
+* *OADP Operator*: OpenShift API for Data Protection.
+* *LCA Operator*: Lifecycle Agent for cluster management.
+* *LVMS Operator*: Local Volume Management Storage.
+* *SR-IOV Operator*: Single Root I/O Virtualization.
+* *Logging Operator*: Cluster logging and observability.
+* *PTP Operator*: Precision Time Protocol for time sync.
+
+[#workload-deployment]
+=== Deployment Phases
+
+CAUTION: This is a estimation based on our experience and our environment.
+
+Phase 1: Hub Cluster (30-45 minutes)
+
+1. *Cluster Creation*: Deploy OpenShift hub cluster.
+2. *ArgoCD Setup*: Configure GitOps capabilities.
+3. *Storage Setup*: Configure LVM storage.
+4. *Operator Installation*: Install hub cluster operators.
+
+Phase 2: Multi-Cluster Setup (15-30 minutes)
+
+1. *MCH Installation*: Deploy Multi-Cluster Hub.
+2. *MCE Configuration*: Set up Multi-Cluster Engine.
+3. *Readiness Verification*: Ensure multi-cluster capabilities.
+
+Phase 3: SNO Cluster (45-60 minutes)
+
+1. *SNO Deployment*: Create Single Node OpenShift cluster.
+2. *Operator Installation*: Install telco-specific operators.
+3. *Network Configuration*: Set up SR-IOV and PTP networks.
+4. *Performance Tuning*: Apply performance optimizations.
+
+[#workload-troubleshooting]
+=== Troubleshooting
+
+Here you can find some common issues and what to check.
+
+* *Operator installation failures*: Check operator catalog availability.
+* *ZTP configuration issues*: Verify ArgoCD patch application.
+
+The following commands can help you to identify the potential issue:
 
 [.console-input]
 [source,bash,subs="attributes+,+macros"]
 -----
-semanage fcontext -a -t dnsmasq_etc_t "/opt/dnsmasq/include.d(/.*)?"
-semanage fcontext -a -t dnsmasq_lease_t "/opt/dnsmasq/(.*)?\.leases"
-semanage fcontext -a -t dnsmasq_etc_t "/opt/dnsmasq/(.*)?\.conf"
-semanage fcontext -a -t dnsmasq_etc_t "/opt/dnsmasq"
-restorecon -rv /opt/dnsmasq/
+# Check hub cluster status
+oc get nodes --kubeconfig /home/lab-user/hub-kubeconfig
+
+# Check SNO cluster status
+oc get nodes --kubeconfig /home/lab-user/seed-cluster-kubeconfig
+
+# Check operator status
+oc get csv -A --kubeconfig /home/lab-user/seed-cluster-kubeconfig
+
+# Check SR-IOV configuration
+oc get node openshift-master-0 -o json --kubeconfig /home/lab-user/seed-cluster-kubeconfig | jq '.status.allocatable'
 -----
 
-Now, you can start the dnsmasq-virt systemd service.
+[#workload-time]
+=== Time Requirements
+
+**Hub Cluster**: 30-45 minutes.
+**Multi-Cluster Setup**: 15-30 minutes.
+**SNO Cluster**: 45-60 minutes.
+
+**Total Duration**: 90-135 minutes aprox.
+
+[#next-steps]
+== Next Steps
+
+The workload phase creates a complete 5G RAN RDS lab environment ready for advanced telco workload deployment and testing. Once workload completes successfully, the system provides:
+
+1. **Fully functional hub cluster** with multi-cluster management.
+2. **SNO cluster** with telco-specific operators.
+3. **Network infrastructure** for 5G workloads.
+4. **Performance optimizations** for telco applications.
+5. **Ready environment** for 5G RAN lab exercises.
+
+After successful workload deployment:
+
+1. **Access the lab**: Use the showroom interface. Showroom is a WebAPP consisting of different services that will be used to expose the lab content and a terminal and a browser running on the hypervisor host, that way uses can consume the lab from their browser without extra requirements. At this point we can access our hypervisor to get the Showroom app, this URL is the one the student will use with the credentials we configured. Example url: https://hypervisor.example.com/content/.
+2. **Run lab exercises**: Follow the https://labs.sysdeseng.com/5g-ran-deployments-on-ocp-lab/{lab-major-version}/welcome.html[5G RAN RDS deployments lab].
+
+[#delete-environment]
+== Delete the Environment
+
+If the installation fails for whatever reason, you will need to delete all the VMs that were created and execute the same procedure again. To delete all the VMs and configurations done, you have to connect to your **hypervisor server** and become root. Then, create the following script and execute it:
 
 [.console-input]
 [source,bash,subs="attributes+,+macros"]
 -----
-systemctl restart dnsmasq-virt.service
------
+cat <<EOF > ~/clean.sh
+#!/bin/bash
 
-Verify that the dnsmasq-virt service has started successfully this time.
-
-[#configure-local-dns-as-primary-server]
-=== Configure Local DNS as Primary Server
-
-The default upstream DNS is set to 1.1.1.1 in `/opt/dnsmasq/upstream-resolv.conf`. There might be cases in your local environment where the hypervisor may not reach it. So, notice that you must change it to a different DNS that allows you to resolve public hostnames. Once changed, remember to restart the dnsmasq-virt service.
-
-[.console-input]
-[source,bash,subs="attributes+,+macros"]
------
-curl -L https://raw.githubusercontent.com/{repo_user}/5g-ran-deployments-on-ocp-lab/{branch}/lab-materials/lab-env-data/hypervisor/forcedns -o /etc/NetworkManager/dispatcher.d/forcedns
-chmod +x /etc/NetworkManager/dispatcher.d/forcedns
-systemctl restart NetworkManager
-/etc/NetworkManager/dispatcher.d/forcedns
------
-
-[#disable-firewall]
-=== Disable Firewall
-
-You can also create the required rules in the firewall if you want, but for the sake of simplicity we are disabling the firewall.
-
-[.console-input]
-[source,bash,subs="attributes+,+macros"]
------
-systemctl disable firewalld
-systemctl stop firewalld
-iptables -F
-systemctl restart libvirtd
------
-
-WARNING: The iptables.service probably does not exist in your server, so it fails to be disabled. In that case, just continue with the rest of the commands.
-
-[#configure-webcache]
-=== Configure Webcache
-
-The webcache is basically an Apache httpd container serving the RHCOS live ISO and rootfs images locally. They are required for provisioning OCP clusters.
-
-[.console-input]
-[source,bash,subs="attributes+,+macros"]
------
-curl -L https://raw.githubusercontent.com/{repo_user}/5g-ran-deployments-on-ocp-lab/{branch}/lab-materials/lab-env-data/webcache/podman-webcache.service -o /etc/systemd/system/podman-webcache.service
-mkdir -p /opt/webcache/data
-curl -L {rhcos-rootfs-url} -o /opt/webcache/data/{rhcos-rootfs-filename}
-curl -L {rhcos-liveiso-url} -o /opt/webcache/data/{rhcos-liveiso-filename}
-systemctl daemon-reload
-systemctl enable podman-webcache --now
------
-
-Verify that the webcache container has started successfully by executing `podman ps`. If it is not running, check the status of the podman-webcache systemd unit.
-
-[#configure-s3]
-=== Configure S3 Storage
-
-We need a few S3 buckets. They are required for updating SNOs using IBU.
-
-[.console-input]
-[source,bash,subs="attributes+,+macros"]
------
-curl -L https://raw.githubusercontent.com/{repo_user}/5g-ran-deployments-on-ocp-lab/{branch}/lab-materials/lab-env-data/minio/podman-minio.service -o /etc/systemd/system/podman-minio.service
-mkdir -p /opt/minio/s3-volume
-systemctl daemon-reload
-systemctl enable podman-minio --now
------
-
-Verify that the minio container has started successfully by executing `podman ps`. If it is not running, check the status of the podman-minio systemd unit.
-
-Now we configure the buckets:
-
-[.console-input]
-[source,bash,subs="attributes+,+macros"]
------
-curl -L https://dl.min.io/client/mc/release/linux-amd64/mc -o /usr/local/bin/mc
-chmod +x /usr/local/bin/mc
-mc alias set minio http://192.168.125.1:9002 admin admin1234
-mc mb minio/sno-abi
-mc mb minio/sno-ibi
-mc mb minio/logs
------
-
-[#install-ksushytool]
-=== Install Ksushy Tool
-
-[.console-input]
-[source,bash,subs="attributes+,+macros"]
------
-pip3 install cherrypy
-kcli create sushy-service --ssl --port 9000
-systemctl enable ksushy --now
------
-
-Verify that the ksushy service is running. Furthermore, you can check that the port number 9000 TCP is being used by a python application (ksushy) by executing `ss -tupln | grep 9000`.
-
-[#configure-disconnected-registry]
-=== Configure Disconnected Registry
-
-[.console-input]
-[source,bash,subs="attributes+,+macros"]
------
-dnf -y install podman httpd-tools
-REGISTRY_NAME=infra.5g-deployment.lab
-mkdir -p /opt/registry/{auth,certs,data,conf}
-curl -sL https://raw.githubusercontent.com/{repo_user}/5g-ran-deployments-on-ocp-lab/{branch}/lab-materials/lab-env-data/registry/registry-key.pem -o /opt/registry/certs/registry-key.pem
-curl -sL https://raw.githubusercontent.com/{repo_user}/5g-ran-deployments-on-ocp-lab/{branch}/lab-materials/lab-env-data/registry/registry-cert.pem -o /opt/registry/certs/registry-cert.pem
-htpasswd -bBc /opt/registry/auth/htpasswd admin r3dh4t1! 
-curl -sL https://raw.githubusercontent.com/{repo_user}/5g-ran-deployments-on-ocp-lab/{branch}/lab-materials/lab-env-data/registry/config.yml -o /opt/registry/conf/config.yml
-curl -sL https://raw.githubusercontent.com/{repo_user}/5g-ran-deployments-on-ocp-lab/{branch}/lab-materials/lab-env-data/registry/podman-registry.service -o /etc/systemd/system/podman-registry.service
-systemctl daemon-reload
-systemctl enable podman-registry --now
-cp /opt/registry/certs/registry-cert.pem /etc/pki/ca-trust/source/anchors/
-update-ca-trust
-sleep 10
-podman login --authfile auth.json -u admin  infra.5g-deployment.lab:8443 -p r3dh4t1!
------
-
-NOTE: Link to additional configuration documentation of a disconnected registry: {disconnected-registry-docs}
-
-[#configure-git-server]
-=== Configure Git Server
-
-[.console-input]
-[source,bash,subs="attributes+,+macros"]
------
-mkdir -p /opt/gitea/
-chown -R 1000:1000 /opt/gitea/
-curl -sL https://raw.githubusercontent.com/{repo_user}/5g-ran-deployments-on-ocp-lab/{branch}/lab-materials/lab-env-data/gitea/podman-gitea.service -o /etc/systemd/system/podman-gitea.service
-systemctl daemon-reload
-systemctl enable podman-gitea --now
-sleep 20
-podman exec --user 1000 gitea /bin/sh -c 'gitea admin user create --username student --password student --email student@5g-deployment.lab --must-change-password=false --admin'
-curl -u 'student:student' -H 'Content-Type: application/json' -X POST --data '{"service":"2","clone_addr":"https://github.com/{repo_user}/5g-ran-deployments-on-ocp-lab.git","uid":1,"repo_name":"5g-ran-deployments-on-ocp-lab"}' http://infra.5g-deployment.lab:3000/api/v1/repos/migrate
------
-
-WARNING: It could be possible that the last few commands do not work at the first time since the registry container image is being pulled and then started. If that's the case, try them once again after a couple of seconds.
-
-[#configure-ntp-server]
-=== Configure NTP Server
-
-[.console-input]
-[source,bash,subs="attributes+,+macros"]
------
-dnf install chrony -y
-cat <<EOF > /etc/chrony.conf
-server time.cloudflare.com iburst
-driftfile /var/lib/chrony/drift
-makestep 1.0 3
-rtcsync
-keyfile /etc/chrony.keys
-leapsectz right/UTC
-logdir /var/log/chrony
-bindcmdaddress ::
-allow 192.168.125.0/24
-EOF
-systemctl enable chronyd --now
------
-
-[#configure-showroom-app]
-=== Configure Showroom APP
-
-Showroom is a WebAPP consisting of different services that will be used to expose the lab content and a terminal and a browser running on the hypervisor host, that way uses can consume the lab from their browser without extra requirements.
-
-First we need to create a user that the students will use to connect to the hypervisor terminal, we recommend an unprivileged user.
-
-[.console-input]
-[source,bash,subs="attributes+,+macros"]
------
-useradd lab-user -G libvirt
-passwd lab-user
------
-
-Make sure the new user can use rootless podman:
-
-WARNING: Below command may fail with `ERRO[0000] running `/usr/bin/newuidmap 66372 0 1000 1 1 100000 65536`: newuidmap: write to uid_map failed: Operation not permitted`.
-
-[.console-input]
-[source,bash,subs="attributes+,+macros"]
------
-su - lab-user
-podman version
------
-
-If above command failed, you need to either configure root-less podman or run podman as root.
-
-Next, make sure `lab-user` has the correct git config:
-
-[.console-input]
-[source,bash,subs="attributes+,+macros"]
------
-su - lab-user
-git config --global user.email "student@5g-deployment.lab"
-git config --global user.name "Student"
------
-
-Now that lab-user is configured, make sure you continue to run the next commands as root.
-
-Generate lab content on the hypervisor host:
-
-[.console-input]
-[source,bash,subs="attributes+,+macros"]
------
-HYPERVISOR_PUBLIC_HOSTNAME=<PUT_HERE_PUBLIC_HOSTNAME_OR_IP>
-mkdir -p /opt/showroom
-git clone -b {branch} https://github.com/RHsyseng/5g-ran-deployments-on-ocp-lab.git /opt/showroom/lab-repo/
-podman run --rm -v /opt/showroom/lab-repo:/antora:z quay.io/rhsysdeseng/showroom:antora-v3.0.0 site.yml
-mkdir -p /opt/showroom/lab-content
-cp -pr /opt/showroom/lab-repo/gh-pages/* /opt/showroom/lab-content/
-curl -sL https://raw.githubusercontent.com/{repo_user}/5g-ran-deployments-on-ocp-lab/{branch}/lab-materials/lab-env-data/showroom/webfiles/index.html -o /opt/showroom/lab-content/index.html
-curl -sL https://raw.githubusercontent.com/{repo_user}/5g-ran-deployments-on-ocp-lab/{branch}/lab-materials/lab-env-data/showroom/webfiles/split.css -o /opt/showroom/lab-content/split.css
-curl -sL https://raw.githubusercontent.com/{repo_user}/5g-ran-deployments-on-ocp-lab/{branch}/lab-materials/lab-env-data/showroom/webfiles/tabs.css -o /opt/showroom/lab-content/tabs.css
-curl -sL https://raw.githubusercontent.com/{repo_user}/5g-ran-deployments-on-ocp-lab/{branch}/lab-materials/lab-env-data/showroom/webfiles/tabs.js -o /opt/showroom/lab-content/tabs.js
-sed -i "s/<CHANGEME_LAB_VERSION>/{lab-major-version}/" /opt/showroom/lab-content/index.html
-sed -i "s/<CHANGEME_HYPERVISOR_PUBLIC_HOSTNAME>/$HYPERVISOR_PUBLIC_HOSTNAME/" /opt/showroom/lab-content/index.html
------
-
-Run the apache that exposes lab content:
-
-[.console-input]
-[source,bash,subs="attributes+,+macros"]
------
-curl -sL https://raw.githubusercontent.com/{repo_user}/5g-ran-deployments-on-ocp-lab/{branch}/lab-materials/lab-env-data/showroom/podman-showroom-apache.service -o /etc/systemd/system/podman-showroom-apache.service
-systemctl daemon-reload
-systemctl enable podman-showroom-apache --now
------
-
-Run the web terminal:
-
-[.console-input]
-[source,bash,subs="attributes+,+macros"]
------
-LAB_USER_PWD=<PUT_HERE_LAB_USER_PASSWORD>
-curl -sL https://raw.githubusercontent.com/{repo_user}/5g-ran-deployments-on-ocp-lab/{branch}/lab-materials/lab-env-data/showroom/podman-showroom-wetty.service -o /etc/systemd/system/podman-showroom-wetty.service
-sed -i "s/<CHANGEME_LAB_USER>/lab-user/" /etc/systemd/system/podman-showroom-wetty.service
-sed -i "s/<CHANGEME_LAB_USER_PWD>/$LAB_USER_PWD/" /etc/systemd/system/podman-showroom-wetty.service
-systemctl daemon-reload
-systemctl enable podman-showroom-wetty --now
------
-
-Run the firefox browser:
-
-[.console-input]
-[source,bash,subs="attributes+,+macros"]
------
-HTPASS_PASSWORD=<PUT_HERE_A_PASSWORD>
-curl -sL https://raw.githubusercontent.com/{repo_user}/5g-ran-deployments-on-ocp-lab/{branch}/lab-materials/lab-env-data/showroom/podman-showroom-firefox.service -o /etc/systemd/system/podman-showroom-firefox.service
-curl -sL https://raw.githubusercontent.com/{repo_user}/5g-ran-deployments-on-ocp-lab/{branch}/lab-materials/lab-env-data/showroom/firefox-config.tar.gz -o /tmp/firefox-config.tar.gz
-tar xfz /tmp/firefox-config.tar.gz -C /opt/showroom/
-rm -f /tmp/firefox-config.tar.gz
-sed -i "s/<CHANGEME_LAB_USER>/lab-user/" /etc/systemd/system/podman-showroom-firefox.service
-sed -i "s/<CHANGEME_LAB_USER_PWD>/$HTPASS_PASSWORD/" /etc/systemd/system/podman-showroom-firefox.service
-systemctl daemon-reload
-systemctl enable podman-showroom-firefox --now
------
-
-Run the reverse proxy:
-
-[.console-input]
-[source,bash,subs="attributes+,+macros"]
------
-HTPASS_USER=$(echo $HTPASS_PASSWORD | htpasswd -i -n lab-user)
-HYPERVISOR_PUBLIC_HOSTNAME=<PUT_HERE_PUBLIC_HOSTNAME_OR_IP>
-curl -sL https://raw.githubusercontent.com/{repo_user}/5g-ran-deployments-on-ocp-lab/{branch}/lab-materials/lab-env-data/showroom/podman-showroom-traefik.service -o /etc/systemd/system/podman-showroom-traefik.service
-curl -sL https://raw.githubusercontent.com/{repo_user}/5g-ran-deployments-on-ocp-lab/{branch}/lab-materials/lab-env-data/showroom/traefik-config.tar.gz -o /tmp/traefik-config.tar.gz
-mkdir -p /opt/showroom/traefik
-tar xfz /tmp/traefik-config.tar.gz -C /opt/showroom/traefik/
-rm -f /tmp/traefik-config.tar.gz
-sed -i "s|<CHANGEME_HTPASS_USER>|$HTPASS_USER|" /opt/showroom/traefik/config/traefik/dynamic_config.yml
-sed -i "s/<CHANGEME_HYPERVISOR_PUBLIC_HOSTNAME>/$HYPERVISOR_PUBLIC_HOSTNAME/" /opt/showroom/traefik/config/traefik/dynamic_config.yml
-systemctl daemon-reload
-systemctl enable podman-showroom-traefik --now
------
-
-At this point we can access our hypervisor to get the Showroom app, this URL is the one the student will use with the credentials we configured. Example url: `https://hypervisor.example.com/content/`.
-
-[#create-openshift-nodes-vms]
-=== Create SNO Nodes VMs
-
-Before running the following commands, make sure you have generated a SSH key pair in your default location `~/.ssh/`. 
-
-[.console-input]
-[source,bash,subs="attributes+,+macros"]
------
-ssh-keygen -t rsa -b 2048
------
-
-That SSH key will allow you to connect to the VMs you are about to create:
-
-[.console-input]
-[source,bash,subs="attributes+,+macros"]
------
-kcli create pool -p /var/lib/libvirt/images default
-kcli create vm -P start=False -P uefi_legacy=true -P plan=hub -P memory=24000 -P numcpus=12 -P disks=[400] -P nets=['{"name": "5gdeploymentlab", "mac": "aa:aa:aa:aa:02:01"}','{"name":"ptp-network","type":"igb","vfio":"true","noconf":"true"}','{"name":"sriov-network","type":"igb","vfio":"true","noconf":"true","numa":"0"}','{"name":"sriov-network","type":"igb","vfio":"true","noconf":"true","numa":"1"}'] -P name=sno-seed
-kcli create vm -P start=False -P uefi_legacy=true -P plan=hub -P memory=24000 -P numcpus=12 -P disks=[400] -P nets=['{"name": "5gdeploymentlab", "mac": "aa:aa:aa:aa:03:01"}','{"name":"ptp-network","type":"igb","vfio":"true","noconf":"true"}','{"name":"sriov-network","type":"igb","vfio":"true","noconf":"true","numa":"0"}','{"name":"sriov-network","type":"igb","vfio":"true","noconf":"true","numa":"1"}'] -P name=sno-abi
-kcli create vm -P start=False -P uefi_legacy=true -P plan=hub -P memory=24000 -P numcpus=12 -P disks=[300,100] -P nets=['{"name": "5gdeploymentlab", "mac": "aa:aa:aa:aa:04:01"}','{"name":"ptp-network","type":"igb","vfio":"true","noconf":"true"}','{"name":"sriov-network","type":"igb","vfio":"true","noconf":"true","numa":"0"}','{"name":"sriov-network","type":"igb","vfio":"true","noconf":"true","numa":"1"}'] -P name=sno-ibi
------
-
-If you need or want to connect to any of the VMs, once they are started, you can do so by just executing:
-
-[.console-input]
-[source,bash,subs="attributes+,+macros"]
------
-kcli ssh <VM_name>
------
-
-[#deploy-openshift-hub-cluster]
-=== Deploy OpenShift Hub Cluster
-
-IMPORTANT: This step requires a valid OpenShift Pull Secret placed in /root/openshift_pull.json. Notice that you can replace the admin or developer's password shown below for any other.
-
-[.console-input]
-[source,bash,subs="attributes+,+macros"]
------
-curl -sL https://raw.githubusercontent.com/{repo_user}/5g-ran-deployments-on-ocp-lab/{branch}/lab-materials/lab-env-data/hub-cluster/hub.yml -o /root/hub.yml
-sed -i "s/CHANGE_ADMIN_PWD/admin/" hub.yml
-sed -i "s/CHANGE_DEV_PWD/developer/" hub.yml
-cd /root/
-kcli create cluster openshift --pf hub.yml
------
-
-This will take around 40 minutes to complete.
-
-If the installation fails for whatever reason, you will need to delete all the VMs that were created and execute the same procedure again. So, first remove the plans, which actually will remove all VMs:
-
-[.console-input]
-[source,bash,subs="attributes+,+macros"]
------
 kcli delete plan hub -y
+systemctl stop podman-gitea podman-registry.service podman-webcache.service podman-showroom-firefox.service podman-minio.service podman-showroom-traefik.service podman-showroom-apache.service podman-showroom-wetty.service
+podman rmi -f quay.io/alosadag/httpd:p8080 quay.io/mavazque/gitea:1.17.3 quay.io/mavazque/registry:2.7.1 quay.io/fedora/httpd-24-micro:2.4 quay.io/rhsysdeseng/showroom:webfirefox quay.io/rhsysdeseng/showroom:traefik-v3.3.4 quay.io/minio/minio:RELEASE.2025-02-07T23-21-09Z quay.io/rhsysdeseng/showroom:wetty quay.io/rhsysdeseng/showroom:antora-v3.0.0 infra.5g-deployment.lab:8443/openshift4/ztp-site-generate-rhel8:v4.19.0-1 registry.redhat.io/openshift4/ztp-site-generate-rhel8:v4.19
+rm -rf /opt/gitea/
+rm -rf /opt/webcache/
+rm -rf /opt/dnsmasq
+rm -rf /opt/registry
+rm -rf /opt/minio
+rm -rf /opt/showroom
+rm -rf ~/.kcli
+rm -f /usr/bin/oc /usr/bin/kubectl /usr/bin/openshift-install
+rm -f /tmp/*.yaml /tmp/*.json
+rm -rf /home/lab-user/.ssh
+rm -rf ~/manifests ~/working-dir
+rm -f /root/*
+rm -rf /root/5g-deployment-lab/
+rm -f /home/lab-user/*
+rm -f /etc/systemd/system/dnsmasq-virt.service /etc/systemd/system/podman-webcache.service /etc/systemd/system/podman-registry.service /etc/systemd/system/podman-minio.service /etc/systemd/system/podman-gitea.service /etc/systemd/system/podman-*
+rm -f /tmp/*.yaml /tmp/*.json
+EOF
 -----
 
-[console-input]
+[.console-input]
 [source,bash,subs="attributes+,+macros"]
 -----
+bash -x clean.sh
+-----
+[.console-input]
+[source,bash,subs="attributes+"]
+-----
++ kcli delete plan hub -y
+Deleting cluster hub
 hub-ctlplane-0 deleted on local!
 hub-ctlplane-1 deleted on local!
 hub-ctlplane-2 deleted on local!
+Deleting directory /root/.kcli/clusters/hub
 sno-abi deleted on local!
 sno-ibi deleted on local!
 sno-seed deleted on local!
 Plan hub deleted!
++ systemctl stop podman-gitea podman-registry.service podman-webcache.service podman-showroom-firefox.service podman-minio.service podman-showroom-traefik.service podman-showroom-apache.service podman-showroom-wetty.service
++ podman rmi -f quay.io/alosadag/httpd:p8080 quay.io/mavazque/gitea:1.17.3 quay.io/mavazque/registry:2.7.1 quay.io/fedora/httpd-24-micro:2.4 quay.io/rhsysdeseng/showroom:webfirefox quay.io/rhsysdeseng/
+... REDACTED ...
++ rm -f '/tmp/*.yaml' '/tmp/*.json'
 -----
-
-And then create the VMs again as explained in the previous section link:lab-environment.html#create-openshift-nodes-vms[Deploy OpenShift Hub Cluster].
-
-[#configure-openshift-hub-cluster]
-=== Configure OpenShift Hub Cluster
-
-[.console-input]
-[source,bash,subs="attributes+,+macros"]
------
-export KUBECONFIG=~/.kcli/clusters/hub/auth/kubeconfig
-oc -n openshift-storage wait lvmcluster lvmcluster --for=jsonpath='{.status.state}'=Ready --timeout=900s
-oc patch storageclass lvms-vg1 -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
-curl https://raw.githubusercontent.com/{repo_user}/5g-ran-deployments-on-ocp-lab/{branch}/lab-materials/lab-env-data/hub-cluster/argocd-patch.json -o /tmp/argopatch.json
-oc patch argocd openshift-gitops -n openshift-gitops --type=merge --patch-file /tmp/argopatch.json
-oc wait --for=condition=Ready pod -lapp.kubernetes.io/name=openshift-gitops-repo-server -n openshift-gitops
-oc -n openshift-gitops adm policy add-cluster-role-to-user cluster-admin -z openshift-gitops-argocd-application-controller
------
-
-[#deploy-openshift-hub-cluster-operators]
-=== Deploy OpenShift HUB Cluster Operators
-
-[.console-input]
-[source,bash,subs="attributes+,+macros"]
------
-oc apply -f https://raw.githubusercontent.com/{repo_user}/5g-ran-deployments-on-ocp-lab/{branch}/lab-materials/lab-env-data/hub-cluster/hub-operators-argoapps.yaml
------
-
-[#deploy-seed-cluster-without-ztp]
-=== Deploy Seed Cluster (without ZTP)
-
-A SNO is deployed outside the ZTP workflow, this seed cluster will be used as reference to deploy Image Based SNOs.
-
-[.console-input]
-[source,bash,subs="attributes+,+macros"]
------
-curl -L http://infra.5g-deployment.lab:3000/student/5g-ran-deployments-on-ocp-lab/raw/branch/{branch}/lab-materials/lab-env-data/hypervisor/ssh-key -o /root/.ssh/snokey
-chmod 400 /root/.ssh/snokey
-oc apply -f https://raw.githubusercontent.com/{repo_user}/5g-ran-deployments-on-ocp-lab/{branch}/lab-materials/lab-env-data/hub-cluster/sno1-argoapp.yaml
------
-
-Once the cluster is deployed:
-
-IMPORTANT: Cluster is considered deployed once its state is `adding-hosts`.
-
-[.console-input]
-[source,bash,subs="attributes+,+macros"]
------
-oc -n sno-seed get agentclusterinstall,agent
------
-[console-input]
-[source,bash,subs="attributes+,+macros"]
------
-NAME                                                        CLUSTER    STATE
-agentclusterinstall.extensions.hive.openshift.io/sno-seed   sno-seed   adding-hosts
-
-NAME                                                                    CLUSTER    APPROVED   ROLE     STAGE
-agent.agent-install.openshift.io/3d97ebf7-870c-438e-a253-61db15afa2ed   sno-seed   true       master   Done
------
-
-The kubeconfig can be gathered as follows:
-
-[.console-input]
-[source,bash,subs="attributes+,+macros"]
------
-oc -n sno-seed extract secret/sno-seed-admin-kubeconfig --to=- > ~/seed-cluster-kubeconfig
------
-
-Now, with the proper credentials you can check the status of the SNO SEED cluster:
-
-[.console-input]
-[source,bash,subs="attributes+,+macros"]
------
-oc --kubeconfig ~/seed-cluster-kubeconfig get nodes,clusterversion
------
-[console-input]
-[source,bash,subs="attributes+,+macros"]
------
-NAME                      STATUS   ROLES                         AGE     VERSION
-node/openshift-master-0   Ready    control-plane,master,worker   94m     {sno-cluster-version1-kubeversion}
-
-NAME                                         VERSION   AVAILABLE   PROGRESSING   SINCE   STATUS
-clusterversion.config.openshift.io/version   {sno-cluster-version1-cvo}    True        False         75m     Cluster version is {sno-cluster-version1-cvo}
------
-
-[#configure-seed-cluster]
-=== Configure Seed Cluster
-
-[.console-input]
-[source,bash,subs="attributes+,+macros"]
------
-export KUBECONFIG=~/seed-cluster-kubeconfig 
-curl -sL https://raw.githubusercontent.com/{repo_user}/5g-ran-deployments-on-ocp-lab/{branch}/lab-materials/sno-config/02_oadp_deployment.yaml -o /tmp/02_oadp_deployment.yaml
-curl -sL https://raw.githubusercontent.com/{repo_user}/5g-ran-deployments-on-ocp-lab/{branch}/lab-materials/sno-config/02_lca_deployment.yaml -o /tmp/02_lca_deployment.yaml
-curl -sL https://raw.githubusercontent.com/{repo_user}/5g-ran-deployments-on-ocp-lab/{branch}/lab-materials/sno-config/02_sriov_deployment.yaml -o /tmp/02_sriov_deployment.yaml
-curl -sL https://raw.githubusercontent.com/{repo_user}/5g-ran-deployments-on-ocp-lab/{branch}/lab-materials/sno-config/02_lvms_deployment.yaml -o /tmp/02_lvms_deployment.yaml
-curl -sL https://raw.githubusercontent.com/{repo_user}/5g-ran-deployments-on-ocp-lab/{branch}/lab-materials/sno-config/02_ptp_deployment.yaml -o /tmp/02_ptp_deployment.yaml
-curl -sL https://raw.githubusercontent.com/{repo_user}/5g-ran-deployments-on-ocp-lab/{branch}/lab-materials/sno-config/02_logging_deployment.yaml -o /tmp/02_logging_deployment.yaml
-curl -sL https://raw.githubusercontent.com/{repo_user}/5g-ran-deployments-on-ocp-lab/{branch}/lab-materials/sno-config/03_sriovoperatorconfig.yaml -o /tmp/03_sriovoperatorconfig.yaml
-curl -sL https://raw.githubusercontent.com/{repo_user}/5g-ran-deployments-on-ocp-lab/{branch}/lab-materials/sno-config/03_sriov-nw-du-netdev.yaml -o /tmp/03_sriov-nw-du-netdev.yaml
-curl -sL https://raw.githubusercontent.com/{repo_user}/5g-ran-deployments-on-ocp-lab/{branch}/lab-materials/sno-config/03_sriov-nw-du-vfio.yaml -o /tmp/03_sriov-nw-du-vfio.yaml
-curl -sL https://raw.githubusercontent.com/{repo_user}/5g-ran-deployments-on-ocp-lab/{branch}/lab-materials/sno-config/03_ptpoperatorconfig.yaml -o /tmp/03_ptpoperatorconfig.yaml
-curl -sL https://raw.githubusercontent.com/{repo_user}/5g-ran-deployments-on-ocp-lab/{branch}/lab-materials/sno-config/03_logging_config.yaml -o /tmp/03_logging_config.yaml
-curl -sL https://raw.githubusercontent.com/{repo_user}/5g-ran-deployments-on-ocp-lab/{branch}/lab-materials/sno-config/04_performance_profile.yaml -o /tmp/04_performance_profile.yaml
-curl -sL https://raw.githubusercontent.com/{repo_user}/5g-ran-deployments-on-ocp-lab/{branch}/lab-materials/sno-config/05_TunedPerformancePatch.yaml -o /tmp/05_TunedPerformancePatch.
-oc apply -f /tmp/02_oadp_deployment.yaml -f /tmp/02_lca_deployment.yaml -f /tmp/02_lvms_deployment.yaml -f /tmp/02_sriov_deployment.yaml -f /tmp/02_ptp_deployment.yaml -f /tmp/02_logging_deployment.yaml
-sleep 30
-oc -n openshift-adp wait clusterserviceversion -l operators.coreos.com/redhat-oadp-operator.openshift-adp --for=jsonpath='{.status.phase}'=Succeeded --timeout=900s
-oc -n openshift-lifecycle-agent wait clusterserviceversion -l operators.coreos.com/lifecycle-agent.openshift-lifecycle-agent --for=jsonpath='{.status.phase}'=Succeeded --timeout=900s
-oc -n openshift-storage wait clusterserviceversion -l operators.coreos.com/lvms-operator.openshift-storage --for=jsonpath='{.status.phase}'=Succeeded --timeout=900s
-oc -n openshift-sriov-network-operator wait clusterserviceversion -l operators.coreos.com/sriov-network-operator.openshift-sriov-network-operator --for=jsonpath='{.status.phase}'=Succeeded --timeout=900s
-oc apply -f /tmp/03_sriovoperatorconfig.yaml -f /tmp/03_sriov-nw-du-netdev.yaml -f /tmp/03_sriov-nw-du-vfio.yaml
-oc -n openshift-ptp wait clusterserviceversion -l operators.coreos.com/ptp-operator.openshift-ptp --for=jsonpath='{.status.phase}'=Succeeded --timeout=900s
-oc apply -f /tmp/03_ptpoperatorconfig.yaml
-oc -n openshift-operators wait clusterserviceversion -l operators.coreos.com/cluster-logging.openshift-operators --for=jsonpath='{.status.phase}'=Succeeded --timeout=900s
-oc apply -f /tmp/03_logging_config.yaml
-sleep 30
-oc wait node openshift-master-0 --for=jsonpath='{.status.allocatable.openshift\.io/virt-enp4s0}'=2 --timeout=900s
-oc wait node openshift-master-0 --for=jsonpath='{.status.allocatable.openshift\.io/virt-enp5s0}'=2 --timeout=900s
-oc apply -f /tmp/04_performance_profile.yaml -f /tmp/05_TunedPerformancePatch.yaml
------
-
-When applying the PerformanceProfile the SNO Seed cluster will be rebooted. Wait until the cluster is up and wait for the PerformanceProfile to report `Available` condition:
-
-[.console-input]
-[source,bash,subs="attributes+,+macros"]
------
-oc wait --for='jsonpath={.status.conditions[?(@.type=="Available")].status}=True' performanceprofile openshift-node-performance-profile
------
-
-

@@ -1,5 +1,17 @@
 code:experimental:
 :source-highlighter: highlightjs
+:ocp-clusters-version: v4.22
+:ocp-ai-version: v3.6
+:ocp-mc-mvp-version: v3.6
+
+
+
+
+
+
+
+
+
 :branch: lab-4.20
 :lab-major-version: 4.20
 :repo_user: RHsyseng

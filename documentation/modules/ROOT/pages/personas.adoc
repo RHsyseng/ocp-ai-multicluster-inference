@@ -1,0 +1,68 @@
+= Personas
+include::_attributes.adoc[]
+:profile: ocp-ai-multicluster-inference
+
+Multicluster inference separates the administration of the serving-cluster fleet (the cloud provider) from the consumption of entitled models (the organizations). This section describes the personas that appear across that boundary.
+
+[#persona-roles]
+== Roles
+
+[cols="1,2,2"]
+|===
+|Persona |Who they are |Primary responsibilities
+
+|**Cloud Provider Admin**
+|The infrastructure and platform operator
+|Owns the clusters, deploys models, sets routing policy, and defines subscription tiers. Onboards organizations and sees everything (GPU, token usage) across all organizations and locations.
+
+|**Organization Admin**
+|A tenant-scoped operator
+|Grants their users access to entitled models and reviews usage for their organization only. Connects the organization's identity provider and manages its users and groups.
+
+|**Organization User**
+|A consumer within an organization
+|Self-service: creates API keys and subscriptions, runs inference, and sees their own usage. Never selects a cluster.
+|===
+
+NOTE: Billing is out of scope for this release. The usage visibility described above is token/usage metering only; integration with metering and billing systems is planned for future releases.
+
+NOTE: Bring your own model (BYOM) is on the roadmap, however it won't be part of the RHOAI 3.6 release.
+
+[#persona-comparison]
+== Role comparison
+
+[cols="3,^1,^1,^1"]
+|===
+|Task |Cloud Provider Admin |Organization Admin |Organization User
+
+|Onboard and manage clusters (fleet) |✓ | |
+|Deploy and publish models |✓ | |
+|Set routing policy |✓ | |
+|Define subscription tiers |✓ | |
+|Onboard organizations |✓ | |
+|Connect the organization IdP; manage its users and groups | |✓ |
+|Grant users access to entitled models | |✓ |
+|Create and use own API keys | |✓ |✓
+|Run inference | |✓ |✓
+|View usage — fleet-wide (all organizations) |✓ | |
+|View usage — own organization | |✓ |
+|View usage — own | |✓ |✓
+|===
+
+[#org-admin-boundary]
+== What an Organization Admin can and cannot do
+
+The Organization Admin operates entirely within the boundary the cloud provider granted. This boundary is what makes delegation safe.
+
+An Organization Admin **can**:
+
+- Review the organization's provider-issued subscriptions, groups, models, and service-limit (token-limit) information.
+- Connect the organization's identity provider and manage its users and groups (see xref:identity-management.adoc[Identity Management]).
+- Grant users access to entitled models within the provider-issued boundary.
+- Review and revoke the organization's user API keys for subscriptions they administer.
+
+An Organization Admin **cannot**:
+
+- Change provider-issued subscription limits or routing policy.
+- View another organization's models or usage data.
+- Deploy, copy, place, update, or delete models through the grid.

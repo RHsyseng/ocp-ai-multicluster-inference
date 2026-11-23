@@ -6,58 +6,40 @@ include::_attributes.adoc[]
 |===
 |Acronym |Concept
 
-|BMC
-|Baseboard Management Controller
+|AI
+|Artificial Intelligence
 
-|CNF
-|Cloud-native Network Functions
+|MaaS
+|Models as a Service
 
-|DPDK
-|Data Plane Development Kit
+|RHOAI
+|Red Hat OpenShift AI
 
-|DU
-|Distributed Unit
+|OCP
+|OpenShift Container Platform
 
-|FEC
-|Forward Error correction
+|SP
+|Service Provider
 
-|GVK
-|Group Version Kind
+|AGN
+|AI Grid Network
 
-|LCA
-|Lifecycle Agent (Operator)
+|GLBS
+|Global Load Balancing Service
 
-|MCE
-|Multicluster Engine for Kubernetes
+|GW
+|Gateway
 
-|NTO
-|Node Tuning Operator
+|PPE
+|Praxis Policy Engine
 
-|PGT
-|PolicyGenTemplates
+|CRDT
+|Conflict-free Replicated Data Type
 
-|PMD
-|Poll Mode Driver
+|SWIM
+|Scalable Weakly-consistent Infenction-style Process Group Membership
 
-|PTP
-|Precision Time Protocol
-
-|RAN
-|Radio Access Network
-
-|RU
-|Radio Units
-
-|SR-IOV
-|Single Root I/O Virtualization
-
-|TALM
-|Topology Aware Lifecycle Manager
-
-|VFs
-|Virtual Functions
-
-|vRAN
-|Virtualized Radio Access Networks
+|mTLS
+|Mutual TLS
 
 |===

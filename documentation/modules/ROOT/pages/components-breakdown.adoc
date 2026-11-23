@@ -1,0 +1,177 @@
+= Components Breakdown
+include::_attributes.adoc[]
+:profile: ocp-ai-multicluster-inference
+
+Multicluster Inference is composed of multiple components, in this section we will describe each of them and what part they take into the overall solution.
+
+- **AI Gateway**: The tenant-facing entrypoint. Publishes a single OpenAI-compatible endpoint and enforces the MaaS policy surface (authentication, authorization, rate limiting, and token metering). Envoy-based in RHOAI 3.6, moving to Praxis in RHOAI 3.7.
+- **AGN (AI Grid Network)**: The Praxis control plane that discovers sites, tracks inference provider availability across clusters, and publishes the routing state that the Praxis gateways route from.
+- **llm-d**: The distributed serving stack running on each inference cluster. It takes the "last mile" routing decision, picking the pod that serves the request.
+- **Metering**: Per-tenant and per-user usage recording performed at the gateway, used for showback/chargeback.
+
+The components are grouped into two planes:
+
+- The **control plane** decides *what should happen*: who a tenant is, which models they can use, which clusters are eligible, and how usage is accounted. It never sits in the request hot path.
+- The **data plane** does the actual work for every request: routing across clusters over mTLS and running inference.
+
+[#control-plane-components]
+== Control Plane Components
+
+[#models-as-a-service]
+=== MaaS (Models as a Service)
+
+MaaS is the **tenant-facing** inference service layer on RHOAI. It provides API keys, subscriptions, a model catalog, authentication, authorization, and rate limiting in front of model serving. It is built from four layers:
+
+[cols="1,2,3"]
+|===
+|Layer |Components |Role
+
+|Gateway
+|Gateway API, Istio (Envoy)
+|Entry point for all traffic. `HTTPRoute` resources direct requests to the right model endpoint.
+
+|Policy
+|Kuadrant (Authorino, Limitador) — Red Hat Connectivity Link
+|Enforce authentication, authorization, and rate limiting *at the edge*, before requests reach any model.
+
+|API & Token
+|`maas-api`, PostgreSQL
+|API-key lifecycle: mint, validate, and revoke `sk-oai-*` keys. Stores salted SHA-256 hashes and subscription bindings.
+
+|Model Serving
+|Internal Models (llm-d, vLLM), External Models
+|Run inference. Internal models run as vLLM pods on-cluster; external models proxy to a third-party API.
+|===
+
+**Request flow** when a user makes an inference request:
+
+1. The user gets an API key that provides access to a set of models.
+2. The user sends `POST /v1/chat/completions` with the API key.
+3. The request hits the MaaS Gateway, which matches it against `HTTPRoute` resources to pick the backend.
+4. **Authorino** validates the key against `maas-api` (hash lookup in PostgreSQL), returning the identity and bound subscription. Unknown, revoked, or expired keys are rejected with `401 Unauthorized`.
+5. **Subscription check**: is the user/group allowed this subscription, and is the requested model included in it? If not, `403 Forbidden`.
+6. **Limitador** enforces the request/token limits from the `MaaSSubscription`. Over the limit returns `429 Too Many Requests`.
+7. The request is forwarded to the model (an internal vLLM pod via KServe, or an external API).
+8. The response returns through the Gateway, and usage counters (tokens, requests) are updated for the subscription.
+
+In the multicluster design, MaaS runs on the **entrypoint cluster** as part of the AI Gateway surface, while AGN federates the serving across inference clusters.
+
+[#metering]
+=== Metering
+
+Metering records **who consumed how much**, so a provider can do showback or chargeback per tenant.
+
+- **What is recorded**: tokens consumed and requests made, attributed **per tenant admin and per user**, captured **at the gateway** (Limitador usage counters feed the dashboards).
+- **Where it surfaces**: the observability dashboards (covered later in the lab); metrics carry the tenant name so usage can be filtered and attributed per tenant.
+- **Cross-site spend**: AGN can track per-tenant spend across the whole grid. Each site's locally recorded spend is merged into a per-tenant CRDT counter gossiped over SWIM, so the reported total reflects spend recorded anywhere in the grid.
+
+IMPORTANT: In RHOAI 3.6 metering is **token-based** and is intended for **showback**, not billing-grade invoicing. The cross-site budget total is a **signal only**: AGN reports it but does not itself reject traffic when a cap is reached. GPU-hour metering, rate-card/billing export, and quota-enforcement actions are on the roadmap for later releases.
+
+[#customer-portal-ui]
+=== Customer Portal UI
+
+A set of self-service UIs, one per persona.
+
+- **Provider Admin UI**: Fleet-wide view for the platform/provider admin: the AI Grid map, registered clusters, the model catalog, deployed models, and MaaS governance. This is where clusters are onboarded and models are published to the grid.
+- **Tenant Admin UI**: For the org/business-unit admin: browse the model catalog (including Red Hat AI validated models), see the tenant's deployed models (internal and external), manage subscriptions, and grant users access within the tenant's quota/isolation envelope.
+- **Tenant User UI**: For the data scientist or application engineer: manage API keys and subscriptions, and browse the AI asset endpoints (models and MCP servers) they are permitted to use.
+
+[#data-plane-components]
+== Data Plane Components
+
+[#AGN]
+=== AI Grid Networking
+
+AI Grid Networking is the connective tissue between clusters. It is implemented by Praxis and spans both planes, with one strict boundary:
+
+- AGN (control plane) decides what *should* be routable.
+- Praxis AI (data plane) performs the actual request *routing*.
+
+The AGN operator **never sits in the request hot path**. It only configures the routing overlay the gateways route from.
+
+NOTE: The three gateway roles (Praxis Edge/Consumer and Praxis Provider) are introduced in xref:mci-intro.adoc#ai-gateways[AI Gateways], and the routing algorithm (filter → score → pick) in xref:mci-intro.adoc#how-intelligent-routing-works[How Intelligent Routing works].
+
+[#agn-sites]
+==== Provider and Consumer Sites
+
+A **site** is a participating cluster, represented by a `GridSite` resource. A site can act as a **consumer** (hosts the Edge/Consumer gateways that originate requests) and/or a **provider** (hosts the Provider gateways in front of serving backends).
+
+- A **provider site** declares `InferenceProvider` resources. Its providers become routable elsewhere only after passing lifecycle, trust, freshness, placement, and access-policy checks.
+- A **consumer site** hosts the gateway(s) that load the overlay and select providers.
+
+IMPORTANT: Physical colocation does **not** make a provider automatically eligible: eligibility is governed by trust and policy, not by being on the same cluster. Private inference always goes through a Provider gateway, even within the same site.
+
+[#agn-swim]
+==== SWIM Membership and Gossip
+
+AGN uses **SWIM** for membership gossip, and **CRDT** state to advertise provider/site information between operators:
+
+- SWIM answers: *which peer AGN operators are alive?*
+- CRDT answers: *what provider and site state has each peer advertised?*
+
+SWIM membership is **site-granular**: each AGN operator is a single SWIM node carrying its site's identity, and SWIM members are *other sites'* operators.
+
+Each operator renders the overlay from **its own local view**: local Kubernetes CRDs, local observed provider/site status, and remote state received over SWIM/CRDT. Sites converge but are not guaranteed identical at every instant (rendering is reconcile-driven, not request-driven).
+
+NOTE: SWIM traffic can be encrypted with a shared 32-byte AES-256-GCM key; packets that fail authentication are dropped. A shared key only proves *membership in the key group*. **SWIM membership is not authorization**: a discovered peer must still pass identity and policy checks on every request.
+
+[#agn-overlay]
+==== Routing Overlay and Candidates
+
+For each gateway reference on a `GridNetwork`, the operator writes a **versioned routing overlay**.
+
+The **routing payload** contains the local site name, **candidate** model/provider entries, candidate **site and cluster identities**, freshness/ordering information, and **credential references**.
+
+IMPORTANT: Credential references contain locating information only. Token bytes are **never** written into overlays, ConfigMaps, status, or logs.
+
+A "candidate" is an eligible routing target (a model on a provider, reachable via Praxis).
+
+The routing overlay revision moves through four stages, which are useful when troubleshooting:
+
+[cols="1,3"]
+|===
+|Stage |Meaning
+
+|Rendered
+|AGN produced a valid envelope and semantic revision.
+
+|Distributed
+|Kubernetes accepted the overlay ConfigMap (records its `resourceVersion`).
+
+|Accepted
+|The Praxis gateway validated the envelope and installed its in-memory snapshot.
+
+|Serving
+|A request actually selected a route from that accepted snapshot.
+|===
+
+[#agn-pki]
+==== Grid PKI
+
+AGN manages control-plane trust material and can generate a **Grid CA** and **site certificates**:
+
+* Site certificates follow the **SPIFFE X.509-SVID leaf** profile, where `OrganizationName` is the site name. That organization is the per-request identity a gateway filter can read; a certificate for the wrong site passes the TLS handshake but **fails closed with 403** at the filter.
+* **Enrollment** uses a one-time invite (`SiteInvite`) that pins the site name and jurisdictions and has a bounded lifetime (default is 24h). The token and Grid CA bundle are delivered out of band; the token is never published in status.
+* **Peer trust modes**:
+** *SPIFFE*: admit any site presenting a certificate the Grid CA signed.
+** *Pinning*: admin only pre-configured certificates (current one's fingerprint + rotated cert fingerprint).
+
+[#llm-d]
+=== llm-d
+
+**llm-d** is the distributed LLM serving stack that runs on each inference cluster. Where AGN picks the *cluster*, llm-d picks the *pod*:
+
+- The **Endpoint Picker (EPP)** takes the "last mile" routing decision inside the cluster, choosing which serving pod handles a given request based on request-time signals (prefix affinity, per-pod load, and KV-cache state).
+- It supports **prefill/decode (P/D) disaggregation**, splitting the compute-heavy prefill phase from the decode phase so the KV cache does not have to be re-sent.
+- It is **KV-cache aware**: it keeps a conversation on a pod that already holds its prefix to maximize cache hits (faster first token, less GPU time).
+
+The provider-level signals AGN scores on (queue depth, KV-cache saturation) come from the llm-d/vLLM pools. See xref:mci-intro.adoc#how-intelligent-routing-works[How Intelligent Routing works] for how the grid-level and pod-level decisions combine.
+
+[#vllm]
+=== vLLM
+
+**vLLM** is the high-throughput inference engine that actually runs the model on the GPU. It is the serving backend behind llm-d:
+
+- Exposes an **OpenAI-compatible API** (Chat Completions, and more), which is what lets the gateways present one uniform endpoint over many backends.
+- Manages the **KV (attention) cache** per request, enabling the cache-hit optimizations described above.
+- Exposes operational metrics (such as queue depth and KV-cache utilization) that are consumed upstream as the provider signals AGN and llm-d route on.
