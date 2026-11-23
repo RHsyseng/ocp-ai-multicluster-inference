@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Personas :: LAB - OCP AI Multicluster Inference</title>
+    <link rel="canonical" href="https://labs.sysdeseng.com/3.6/personas.html">
+    <link rel="prev" href="components-breakdown.html">
+    <link rel="next" href="identity-management.html">
+    <meta name="generator" content="Antora 3.0.0">
+    <link rel="stylesheet" href="../_/css/site.css">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com/en/solutions/telecommunications" target="_blank"><img src="../_/img/Logo-Red_Hat-A-Reverse-RGB.png" height="40px" alt="Red Hat Telco Solutions"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="https://labs.sysdeseng.com">LAB - OCP AI Multicluster Inference</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://developers.redhat.com/ebooks/" target="_blank">Books</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">More Tutorials</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/kubernetes-tutorial/" target="_blank">Kubernetes</a>
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/istio-tutorial/" target="_blank">Istio</a>
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/quarkus-tutorial/" target="_blank">Quarkus</a>
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/knative-tutorial/" target="_blank">Knative</a>
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/tekton-tutorial/" target="_blank">Tekton</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="3.6" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="welcome.html"></a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="welcome.html">Welcome</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="welcome.html#ocp-ai-multicluster-inference-lab">Lab Introduction</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="welcome.html#showroom-intro">Introduction to the Showroom Environment</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="welcome.html#resizing-sections">Resizing App Sections</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="welcome.html#multiple-terminals">Opening Multiple Terminals</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="welcome.html#web-browser">Web Browser</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="welcome.html#current-contributors">Current Contributors</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="introduction.html">Introduction</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="introduction.html#lab-aim">Who Is This Lab Aimed At?</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="introduction.html#what-you-will-achieve">What You Will Achieve</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="introduction.html#lab-software-versions">Lab Software Versions</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="acronyms.html">Acronyms used in the lab</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="mci-intro.html">Introduction to Red Hat OpenShift AI Multi-Cluster Inference</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="mci-intro.html#service-provider-pov">Service Provider PoV</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="mci-intro.html#journey-to-multicluster-inference">The Journey to Multicluster Inference</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="mci-intro.html#distributed-multicluster-inference-architecture">Distributed Multi-Cluster Inference architecture</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="mci-intro.html#inference-entrypoint-clusters">Inference Entrypoint Clusters</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="mci-intro.html#inference-clusters">Inference Clusters</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="mci-intro.html#ai-gateways">AI Gateways</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="mci-intro.html#multicluster-inference-routing">Multi-Cluster Inference routing</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="mci-intro.html##why-multicluster-routing-is-hard">Why Multi-Cluster Routing is Hard</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="mci-intro.html#where-does-glbs-fit">Where does Global LoadBalancer Service Fit?</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="mci-intro.html#how-intelligent-routing-works">How Intelligent Routing works</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="mci-intro.html#keeping-the-kv-cache-warm">Keeping the KV Cache Warm</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="mci-intro.html#learning-the-grid-capacity">Learning the Grid Capacity</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="components-breakdown.html">Components Breakdown</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="components-breakdown.html#control-plane-components">Control Plane Components</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="components-breakdown.html#models-as-a-service">MaaS (Models as a Service)</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="components-breakdown.html#metering">Metering</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="components-breakdown.html#customer-portal-ui">Customer Portal UI</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="components-breakdown.html#data-plane-components">Data Plane Components</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="components-breakdown.html#AGN">AI Grid Networking</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="components-breakdown.html#agn-sites">Provider and Consumer Sites</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="components-breakdown.html#agn-swim">SWIM Membership and Gossip</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="components-breakdown.html#agn-overlay">Routing Overlay and Candidates</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="components-breakdown.html#agn-pki">Grid PKI</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="components-breakdown.html#llm-d">llm-d</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="components-breakdown.html#vllm">vLLM</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item is-current-page" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="personas.html">Personas</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="#persona-roles">Roles</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="#persona-comparison">Role comparison</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="#org-admin-boundary">What an Organization Admin can and cannot do</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="identity-management.html">Identity Management</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="identity-management.html#tenant-identity-onboarding">Tenant onboarding and identity integration</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="identity-management.html#breakglass">The breakglass account</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="identity-management.html#identity-sign-in-keys">Sign-in and API keys</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="identity-management.html#identity-auth-layers">Authentication layers</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="tenancy-model.html">Tenancy Model</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="tenancy-model.html#tenancy-subscriptions">Provider-issued subscriptions and entitlements</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="tenancy-model.html#tenancy-isolation">Isolation and the governance boundary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="welcome.html">LAB - OCP AI Multicluster Inference</a></li>
+    <li><a href="personas.html">Personas</a></li>
+  </ul>
+</nav>
+  <div class="edit-this-page"><a href="https://github.com/RHsyseng/ocp-ai-multicluster-inference/edit/lab-3.6/documentation/modules/ROOT/pages/personas.adoc">Edit this Page</a></div>
+  </div>
+  <div class="content">
+<article class="doc">
+<h1 class="page">Personas</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Multicluster inference separates the administration of the serving-cluster fleet (the cloud provider) from the consumption of entitled models (the organizations). This section describes the personas that appear across that boundary.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="persona-roles"><a class="anchor" href="#persona-roles"></a>Roles</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 40%;">
+<col style="width: 40%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Persona</th>
+<th class="tableblock halign-left valign-top">Who they are</th>
+<th class="tableblock halign-left valign-top">Primary responsibilities</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Cloud Provider Admin</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The infrastructure and platform operator</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Owns the clusters, deploys models, sets routing policy, and defines subscription tiers. Onboards organizations and sees everything (GPU, token usage) across all organizations and locations.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Organization Admin</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A tenant-scoped operator</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Grants their users access to entitled models and reviews usage for their organization only. Connects the organization&#8217;s identity provider and manages its users and groups.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Organization User</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A consumer within an organization</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Self-service: creates API keys and subscriptions, runs inference, and sees their own usage. Never selects a cluster.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Billing is out of scope for this release. The usage visibility described above is token/usage metering only; integration with metering and billing systems is planned for future releases.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Bring your own model (BYOM) is on the roadmap, however it won&#8217;t be part of the RHOAI 3.6 release.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="persona-comparison"><a class="anchor" href="#persona-comparison"></a>Role comparison</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6668%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Task</th>
+<th class="tableblock halign-center valign-top">Cloud Provider Admin</th>
+<th class="tableblock halign-center valign-top">Organization Admin</th>
+<th class="tableblock halign-center valign-top">Organization User</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Onboard and manage clusters (fleet)</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">✓</p></td>
+<td class="tableblock halign-center valign-top"></td>
+<td class="tableblock halign-center valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Deploy and publish models</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">✓</p></td>
+<td class="tableblock halign-center valign-top"></td>
+<td class="tableblock halign-center valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set routing policy</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">✓</p></td>
+<td class="tableblock halign-center valign-top"></td>
+<td class="tableblock halign-center valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Define subscription tiers</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">✓</p></td>
+<td class="tableblock halign-center valign-top"></td>
+<td class="tableblock halign-center valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Onboard organizations</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">✓</p></td>
+<td class="tableblock halign-center valign-top"></td>
+<td class="tableblock halign-center valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Connect the organization IdP; manage its users and groups</p></td>
+<td class="tableblock halign-center valign-top"></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">✓</p></td>
+<td class="tableblock halign-center valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Grant users access to entitled models</p></td>
+<td class="tableblock halign-center valign-top"></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">✓</p></td>
+<td class="tableblock halign-center valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Create and use own API keys</p></td>
+<td class="tableblock halign-center valign-top"></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">✓</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">✓</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Run inference</p></td>
+<td class="tableblock halign-center valign-top"></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">✓</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">✓</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">View usage — fleet-wide (all organizations)</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">✓</p></td>
+<td class="tableblock halign-center valign-top"></td>
+<td class="tableblock halign-center valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">View usage — own organization</p></td>
+<td class="tableblock halign-center valign-top"></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">✓</p></td>
+<td class="tableblock halign-center valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">View usage — own</p></td>
+<td class="tableblock halign-center valign-top"></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">✓</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">✓</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="org-admin-boundary"><a class="anchor" href="#org-admin-boundary"></a>What an Organization Admin can and cannot do</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Organization Admin operates entirely within the boundary the cloud provider granted. This boundary is what makes delegation safe.</p>
+</div>
+<div class="paragraph">
+<p>An Organization Admin <strong>can</strong>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Review the organization&#8217;s provider-issued subscriptions, groups, models, and service-limit (token-limit) information.</p>
+</li>
+<li>
+<p>Connect the organization&#8217;s identity provider and manage its users and groups (see <a href="identity-management.html" class="xref page">Identity Management</a>).</p>
+</li>
+<li>
+<p>Grant users access to entitled models within the provider-issued boundary.</p>
+</li>
+<li>
+<p>Review and revoke the organization&#8217;s user API keys for subscriptions they administer.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>An Organization Admin <strong>cannot</strong>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Change provider-issued subscription limits or routing policy.</p>
+</li>
+<li>
+<p>View another organization&#8217;s models or usage data.</p>
+</li>
+<li>
+<p>Deploy, copy, place, update, or delete models through the grid.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="components-breakdown.html">Components Breakdown</a></span>
+  <span class="next"><a href="identity-management.html">Identity Management</a></span>
+</nav>
+</article>
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <a class="rhd-logo" href="https://redhat.com" target="_blank"></div>
+</footer>
+<script src="../_/js/vendor/clipboard.js"></script>
+<script src="../_/js/site.js"></script>
+<script async src="../_/js/vendor/highlight.js"></script>
+<script src="../_/js/image-zoom.js"></script>
+  </body>
+</html>

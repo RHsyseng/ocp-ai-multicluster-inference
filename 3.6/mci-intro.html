@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Introduction to Red Hat OpenShift AI Multi-Cluster Inference :: LAB - OCP AI Multicluster Inference</title>
+    <link rel="canonical" href="https://labs.sysdeseng.com/3.6/mci-intro.html">
+    <link rel="prev" href="acronyms.html">
+    <link rel="next" href="components-breakdown.html">
+    <meta name="generator" content="Antora 3.0.0">
+    <link rel="stylesheet" href="../_/css/site.css">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com/en/solutions/telecommunications" target="_blank"><img src="../_/img/Logo-Red_Hat-A-Reverse-RGB.png" height="40px" alt="Red Hat Telco Solutions"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="https://labs.sysdeseng.com">LAB - OCP AI Multicluster Inference</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://developers.redhat.com/ebooks/" target="_blank">Books</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">More Tutorials</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/kubernetes-tutorial/" target="_blank">Kubernetes</a>
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/istio-tutorial/" target="_blank">Istio</a>
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/quarkus-tutorial/" target="_blank">Quarkus</a>
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/knative-tutorial/" target="_blank">Knative</a>
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/tekton-tutorial/" target="_blank">Tekton</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="3.6" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="welcome.html"></a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="welcome.html">Welcome</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="welcome.html#ocp-ai-multicluster-inference-lab">Lab Introduction</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="welcome.html#showroom-intro">Introduction to the Showroom Environment</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="welcome.html#resizing-sections">Resizing App Sections</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="welcome.html#multiple-terminals">Opening Multiple Terminals</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="welcome.html#web-browser">Web Browser</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="welcome.html#current-contributors">Current Contributors</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="introduction.html">Introduction</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="introduction.html#lab-aim">Who Is This Lab Aimed At?</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="introduction.html#what-you-will-achieve">What You Will Achieve</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="introduction.html#lab-software-versions">Lab Software Versions</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="acronyms.html">Acronyms used in the lab</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="mci-intro.html">Introduction to Red Hat OpenShift AI Multi-Cluster Inference</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="#service-provider-pov">Service Provider PoV</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="#journey-to-multicluster-inference">The Journey to Multicluster Inference</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="#distributed-multicluster-inference-architecture">Distributed Multi-Cluster Inference architecture</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="#inference-entrypoint-clusters">Inference Entrypoint Clusters</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="#inference-clusters">Inference Clusters</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="#ai-gateways">AI Gateways</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="#multicluster-inference-routing">Multi-Cluster Inference routing</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="##why-multicluster-routing-is-hard">Why Multi-Cluster Routing is Hard</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="#where-does-glbs-fit">Where does Global LoadBalancer Service Fit?</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="#how-intelligent-routing-works">How Intelligent Routing works</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#keeping-the-kv-cache-warm">Keeping the KV Cache Warm</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#learning-the-grid-capacity">Learning the Grid Capacity</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="components-breakdown.html">Components Breakdown</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="components-breakdown.html#control-plane-components">Control Plane Components</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="components-breakdown.html#models-as-a-service">MaaS (Models as a Service)</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="components-breakdown.html#metering">Metering</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="components-breakdown.html#customer-portal-ui">Customer Portal UI</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="components-breakdown.html#data-plane-components">Data Plane Components</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="components-breakdown.html#AGN">AI Grid Networking</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="components-breakdown.html#agn-sites">Provider and Consumer Sites</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="components-breakdown.html#agn-swim">SWIM Membership and Gossip</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="components-breakdown.html#agn-overlay">Routing Overlay and Candidates</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="components-breakdown.html#agn-pki">Grid PKI</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="components-breakdown.html#llm-d">llm-d</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="components-breakdown.html#vllm">vLLM</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="personas.html">Personas</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="personas.html#persona-roles">Roles</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="personas.html#persona-comparison">Role comparison</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="personas.html#org-admin-boundary">What an Organization Admin can and cannot do</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="identity-management.html">Identity Management</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="identity-management.html#tenant-identity-onboarding">Tenant onboarding and identity integration</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="identity-management.html#breakglass">The breakglass account</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="identity-management.html#identity-sign-in-keys">Sign-in and API keys</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="identity-management.html#identity-auth-layers">Authentication layers</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="tenancy-model.html">Tenancy Model</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="tenancy-model.html#tenancy-subscriptions">Provider-issued subscriptions and entitlements</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="tenancy-model.html#tenancy-isolation">Isolation and the governance boundary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="welcome.html">LAB - OCP AI Multicluster Inference</a></li>
+    <li><a href="mci-intro.html">Introduction to Red Hat OpenShift AI Multi-Cluster Inference</a></li>
+  </ul>
+</nav>
+  <div class="edit-this-page"><a href="https://github.com/RHsyseng/ocp-ai-multicluster-inference/edit/lab-3.6/documentation/modules/ROOT/pages/mci-intro.adoc">Edit this Page</a></div>
+  </div>
+  <div class="content">
+<article class="doc">
+<h1 class="page">Introduction to Red Hat OpenShift AI Multi-Cluster Inference</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Customers already run inference on several clusters (on-prem, a regional site, maybe a cloud burst).
+The painful part is that <strong>each cluster is its own island</strong>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Applications hardcode endpoints and credentials.</p>
+</li>
+<li>
+<p>Quotas and policies are configured per cluster.</p>
+</li>
+<li>
+<p>Observability and billing data live in different places.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>AI Grid is the connective tissue for those islands:</strong> one control plane, one inference endpoint, one set of policies, across every cluster you own, all built on top of an open-source stack you control.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="service-provider-pov"><a class="anchor" href="#service-provider-pov"></a>Service Provider PoV</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>For a service provider, multicluster distributed inference means:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Exposing inference capabilities from a <strong>fleet of distributed clusters as a single entity</strong> managed by the provider.</p>
+</li>
+<li>
+<p>Selling those capabilities to customers and doing <strong>chargeback by token consumption or GPU-hours</strong>.</p>
+</li>
+<li>
+<p>Letting consumers use <strong>shared models</strong> published by the provider, or get <strong>their own models</strong> deployed on the provider&#8217;s distributed infrastructure.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Who asks for this:</strong> telcos and cloud providers, neoclouds, and enterprise internal providers. Organizations that want to <strong>turn distributed GPU capacity into one service to sell</strong>. Today their apps track every cluster endpoint, platform teams repeat work per cluster, and the business cannot tie GPUs to organizations. The goal is to make many clusters behave like <strong>one governed service</strong>.</p>
+</div>
+<div class="paragraph">
+<p>Telcos and neoclouds are a natural fit: they already run large distributed deployments across the globe, have operational expertise in highly-available, high-demand environments, and can sell these services both B2B and B2C.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="journey-to-multicluster-inference"><a class="anchor" href="#journey-to-multicluster-inference"></a>The Journey to Multicluster Inference</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>No customer arrives at a fully federated, sovereign AI Grid on day one. We foresee three main stages during this journey:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>Single-cluster foundation</strong>: Isolation and multi-tenancy within one cluster.</p>
+</li>
+<li>
+<p><strong>Single-tenant multi-cluster governance</strong>: Fleet management for inference; multiple (potentially heterogeneous) clusters under one control plane and AI Gateway, with central policy authority, centralized quota management and routing.</p>
+</li>
+<li>
+<p><strong>Sovereign AI Grid</strong>: Fleet operations, organization onboarding, routing and usage economics operate as one product, letting the operator monetize infrastructure as a token/inference business.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The lab focuses on stage 2 to 3, based on OpenShift AI v3.6: A hub-and-spoke architecture for multi-cluster routing, model deployment onto a multi-cluster MaaS, and per-organization/per-user usage recording at the gateway.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="distributed-multicluster-inference-architecture"><a class="anchor" href="#distributed-multicluster-inference-architecture"></a>Distributed Multi-Cluster Inference architecture</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The reference architecture separates <strong>where requests enter</strong> from <strong>where inference runs</strong>, connected by an AI Gateway layer.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/mci-arch.png" alt="Multi-cluster inference architecture">
+</div>
+<div class="title">Figure 1. Multi-cluster inference architecture (click to enlarge)</div>
+</div>
+<div class="paragraph">
+<p>The sections below describe the role of each component. For a deeper description of each, see <a href="components-breakdown.html" class="xref page">Components Breakdown</a>.</p>
+</div>
+<div class="sect2">
+<h3 id="inference-entrypoint-clusters"><a class="anchor" href="#inference-entrypoint-clusters"></a>Inference Entrypoint Clusters</h3>
+<div class="paragraph">
+<p>An <strong>entrypoint cluster</strong> is where client traffic arrives. It hosts the <strong>MaaS AI Gateway</strong> (API keys, subscriptions, model catalog, auth, rate limiting, token metering; see <a href="components-breakdown.html#models-as-a-service" class="xref page">MaaS</a>) <strong>and</strong> the <strong>Praxis Edge/Consumer gateway</strong> that connects out to the inference clusters. It publishes a <strong>single, stable, model-addressable endpoint</strong> (for example <code><a href="https://inference.example.com/v1" class="bare">https://inference.example.com/v1</a></code>) and is responsible for:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Authenticating the external caller (API key).</p>
+</li>
+<li>
+<p>Parsing the request to extract the target model (and, for agentic traffic, the MCP tool).</p>
+</li>
+<li>
+<p>Selecting an eligible <strong>provider</strong> from the locally-loaded routing overlay and forwarding over cross-site mTLS.</p>
+</li>
+<li>
+<p>Recording usage (tokens, and in later phases GPU-hours) per organization and per user at the gateway.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Entrypoint clusters do <strong>not</strong> need to host GPUs. In a multi-region design there are multiple entrypoint clusters (for example one per region), each publishing a region-local endpoint, with a GLBS in front of them).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="inference-clusters"><a class="anchor" href="#inference-clusters"></a>Inference Clusters</h3>
+<div class="paragraph">
+<p>An <strong>inference cluster</strong> is where models actually run. It hosts the <strong>Praxis Provider Gateway</strong> and the serving stack (<a href="components-breakdown.html#llm-d" class="xref page">llm-d</a> / <a href="components-breakdown.html#vllm" class="xref page">vLLM</a> through KServe). It is responsible for:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Authenticating the calling Praxis Edge/Consumer Gateway (mTLS peer identity).</p>
+</li>
+<li>
+<p>Validating the selected candidate against <strong>provider-local policy</strong>.</p>
+</li>
+<li>
+<p>Injecting any <strong>provider-owned, final-hop credential</strong> for the backend call.</p>
+</li>
+<li>
+<p>Routing to an authorized private inference backend.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Inference clusters can be heterogeneous (different GPU vendors/generations), different locations (central hall, edge site, sovereign enclave, partner DC), and can expose both <strong>shared</strong> models (available to many organizations) and <strong>dedicated</strong> models (restricted to a single customer; for example a <code>GPT-OSS (vLLM)</code> endpoint that only Customer B can access).</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Bring your own model feature won&#8217;t be available during the RHOAI 3.6 release, it&#8217;s a feature expected for RHOAI 3.7.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="ai-gateways"><a class="anchor" href="#ai-gateways"></a>AI Gateways</h3>
+<div class="paragraph">
+<p>The architecture has <strong>three distinct gateways</strong>, and they are <strong>not</strong> all the same software. They chain together on the request path:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">client → AI Gateway (MaaS) → Praxis Edge/Consumer GW → (mTLS) → Praxis Provider GW → vLLM/llm-d</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>AI Gateway (MaaS)</strong>: The organization-facing entry on the <strong>entrypoint cluster</strong>. It publishes the single OpenAI-compatible endpoint and enforces the MaaS policy surface: API-key authentication, subscription authorization, rate limiting, and token metering.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>In RHOAI 3.6 this gateway is <strong>Envoy-based</strong> (Gateway API + Istio, with Kuadrant / Authorino / Limitador).</p>
+</li>
+<li>
+<p>In RHOAI 3.7 the plan is moving to a <strong>Praxis-based</strong> gateway.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Praxis Edge / Consumer Gateway</strong>: The <strong>connectivity layer to the inference clusters</strong>. It makes the routing decision (which cluster serves the request) from the routing state the AI Grid control plane distributes to it (see <a href="components-breakdown.html#agn-overlay" class="xref page">Routing Overlay and Candidates</a>), and forwards to the chosen cluster <strong>over gateway-to-gateway mTLS</strong>. It does <strong>not</strong> talk to inference servers directly.</p>
+</li>
+<li>
+<p><strong>Praxis Provider Gateway</strong>: A Praxis gateway that sits <strong>in front of the inference servers (vLLM / llm-d)</strong> on an inference cluster. It authenticates the calling Edge/Consumer peer, validates the selected candidate and route, and load-balances to an authorized local backend.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="multicluster-inference-routing"><a class="anchor" href="#multicluster-inference-routing"></a>Multi-Cluster Inference routing</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The promise is <strong>one endpoint</strong>. Users never reason about clusters. Behind that endpoint, the platform chooses <strong>where</strong> each request runs based on signals such as model availability, load, KV-cache hits, latency, token cost, and geo location.</p>
+</div>
+<div class="sect2">
+<h3 id="why-multicluster-routing-is-hard"><a class="anchor" href="#why-multicluster-routing-is-hard"></a>Why Multi-Cluster Routing is Hard</h3>
+<div class="paragraph">
+<p>Without a grid control plane, every gateway would need static, hand-maintained knowledge of every:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Model backend</p>
+</li>
+<li>
+<p>Remote cluster</p>
+</li>
+<li>
+<p>Credential</p>
+</li>
+<li>
+<p>Health Signal</p>
+</li>
+<li>
+<p>Fallbacks</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>That does not scale across multi-cluster, multi-vendor, and multi-region.</p>
+</div>
+<div class="paragraph">
+<p>Challenges presented by Multi-Cluster Routing:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Discovery &amp; liveness</strong>: Which sites exist and which are currently alive.</p>
+</li>
+<li>
+<p><strong>State propagation</strong>: What each site is serving, and at what capacity/health, without a single central database that becomes a bottleneck or a single point of failure.</p>
+</li>
+<li>
+<p><strong>Governed placement</strong>: Honoring sovereignty/residency, organization entitlements, and isolation <strong>before</strong> optimizing for latency/cost/utilization.</p>
+</li>
+<li>
+<p><strong>Hot-path locality</strong>: A request must <strong>not</strong> call Kubernetes, the gossip layer, or the operator to decide where to go; the decision must be served from local state.</p>
+</li>
+<li>
+<p><strong>Trust</strong>: A discovered peer is not an authorized peer; identity must be enforced on every request, not assumed from membership.</p>
+</li>
+<li>
+<p><strong>Usage accounting</strong>: Tokens consumed must be attributed to the right organization and user consistently, no matter which cluster served the request.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>How Praxis grid addresses these challenges:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Challenge</th>
+<th class="tableblock halign-left valign-top">Why it is hard</th>
+<th class="tableblock halign-left valign-top">How the algorithm handles it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Herding</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Every gateway reads the same stale "least-loaded" number and piles onto the same cluster.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Draw two candidates by capacity and keep the lighter; near-ties stay ties (power of two choices).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Stale signals</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Load readings are seconds old (older still from remote sites).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Decide per refresh. No reading ever ranks last or is treated as idle.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Multi-turn KV cache</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The cache never moves between clusters, so the wrong cluster recomputes the whole conversation.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Stay on the cluster holding the prefix <strong>unless</strong> queueing there costs more.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Mixed clusters</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Large and small, near and far, all serving one model.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Weight every draw by <strong>learned</strong> capacity.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>First-turn placement</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The first turn decides where a conversation lives; a returning cluster can sit idle.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Place new conversations by capacity.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Unknown capacity</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Engines do not publish slot limits; cache use can look idle while a queue grows.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Learn capacity from observed load (and have engines publish their limits).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="where-does-glbs-fit"><a class="anchor" href="#where-does-glbs-fit"></a>Where does Global LoadBalancer Service Fit?</h3>
+<div class="paragraph">
+<p>In distributed multi-cluster inference scenarios, external ingress to the platform uses <strong>two independent routing decisions</strong>:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>A <strong>Global Load Balancing Service (GLBS)</strong>: For example: a managed DNS, Anycast, or a global traffic manager. Owns the <strong>stable public name</strong> (i.e: <code>my-distributed-inference.example.com</code>), edge health checking, public traffic steering, and edge withdrawal. It selects <strong>which entrypoint/edge</strong> a client reaches (typically the nearest healthy one).</p>
+</li>
+<li>
+<p><strong>AI Grid Network (AGN) routing</strong> (see <a href="components-breakdown.html#AGN" class="xref page">AI Grid Networking</a>): Begins <strong>after</strong> a request reaches a regional AI gateway. The regional gateway authenticates and parses the request, then selects an eligible inference cluster to serve the request.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>A multi-cluster multi-region architecture looks like this:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/mci-mr-arch.png" alt="Multi-cluster multi-region inference architecture">
+</div>
+<div class="title">Figure 2. Multi-cluster multi-region architecture (click to enlarge)</div>
+</div>
+<div class="paragraph">
+<p>GLBS and AGN are complementary, while GLBS handles <strong>client → edge</strong> availability and geo-steering; AGN handles <strong>edge → inference provider</strong> governed, capacity-aware and policy-aware selection. The edge and provider fleets are independently replicated. An east edge may legitimately select a west provider and vice versa.</p>
+</div>
+<div class="paragraph">
+<p>In the multi-region lab diagram this GLBS layer appears as the <code>AnyCast IP / DNS LB / HW/SW LB</code> box in front of the regional entrypoints.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="how-intelligent-routing-works"><a class="anchor" href="#how-intelligent-routing-works"></a>How Intelligent Routing works</h3>
+<div class="paragraph">
+<p>The AGN selection is <strong>the same shape as the llm-d Endpoint Picker (EPP), however picking clusters instead of pods</strong>. On every request the gateway runs three stages against the latest load from every cluster:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>Filter</strong>: Reduce the candidate set to clusters that <strong>can</strong> serve this request:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Model</strong>: The cluster serves the requested model.</p>
+</li>
+<li>
+<p><strong>Health</strong>: The cluster/provider is healthy.</p>
+</li>
+<li>
+<p><strong>Region</strong>: Honoring geography/residency constraints.</p>
+</li>
+<li>
+<p><strong>Affinity</strong>: Prefer a cluster already holding this conversation&#8217;s cache.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Score</strong>: Rank the survivors from provider signals.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>In-flight request</strong>: Current load.</p>
+</li>
+<li>
+<p><strong>Learned ceiling</strong>: The capacity the grid has <strong>learned</strong> for that cluster.</p>
+</li>
+<li>
+<p><strong>KV-cache saturation</strong>: How full the attention cache is.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Pick</strong>: Choose using <strong>power of two choices</strong> (draw two candidates weighted by capacity, keep the less saturated one). Once the request reaches the inference cluster, the <strong>inference provider (llm-d EPP) takes the last mile</strong> and picks the pod that serves the request.</p>
+</li>
+</ol>
+</div>
+<div class="sect3">
+<h4 id="keeping-the-kv-cache-warm"><a class="anchor" href="#keeping-the-kv-cache-warm"></a><strong>Keeping the KV Cache Warm</strong></h4>
+<div class="paragraph">
+<p>Cache hits matter because chats and agents resend the prompt: a hit means less GPU time and a faster first token, and with prefill/decode (P/D) disaggregation it can skip the KV transfer entirely. <strong>KV cache never crosses clusters</strong>, so routing tries to keep a conversation where its prefix already lives:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Hash</strong> the prompt (no tokenizer needed).</p>
+</li>
+<li>
+<p><strong>Map</strong> each prompt block to the cluster that holds it.</p>
+</li>
+<li>
+<p><strong>Stick</strong> to the best-matching cluster.</p>
+</li>
+<li>
+<p><strong>Yield</strong>: give up the cache hit (when staying would queue longer than moving).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Again this is two-level: the <strong>grid</strong> picks the right <strong>cluster</strong>; the <strong>EPP</strong> picks the right <strong>pod</strong>. The system will deliberately give up a cache hit to avoid a slow cluster.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="learning-the-grid-capacity"><a class="anchor" href="#learning-the-grid-capacity"></a><strong>Learning the Grid Capacity</strong></h4>
+<div class="paragraph">
+<p>Grid capacity is not declared, instead <strong>the grid learns it from how each server handles load</strong>. This is what lets a heterogeneous fleet (large/small, near/far) share one model fairly.</p>
+</div>
+<div class="paragraph">
+<p>For example, during a validation run this was the observed behavior:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Traffic follows capacity</strong>: Under the same rising load, a naive "least loaded" policy swings all traffic between clusters, while intelligent routing keeps every cluster busy near its capacity share.</p>
+</li>
+<li>
+<p><strong>Less capacity, less traffic</strong>: Across four servers of different capacity on two sites, 3,183 requests were all served with no errors, and the smallest remote site received ~14% of traffic versus an even 25% (proportional to its learned capacity).</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="acronyms.html">Acronyms used in the lab</a></span>
+  <span class="next"><a href="components-breakdown.html">Components Breakdown</a></span>
+</nav>
+</article>
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <a class="rhd-logo" href="https://redhat.com" target="_blank"></div>
+</footer>
+<script src="../_/js/vendor/clipboard.js"></script>
+<script src="../_/js/site.js"></script>
+<script async src="../_/js/vendor/highlight.js"></script>
+<script src="../_/js/image-zoom.js"></script>
+  </body>
+</html>

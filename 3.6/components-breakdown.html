@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Components Breakdown :: LAB - OCP AI Multicluster Inference</title>
+    <link rel="canonical" href="https://labs.sysdeseng.com/3.6/components-breakdown.html">
+    <link rel="prev" href="mci-intro.html">
+    <link rel="next" href="personas.html">
+    <meta name="generator" content="Antora 3.0.0">
+    <link rel="stylesheet" href="../_/css/site.css">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com/en/solutions/telecommunications" target="_blank"><img src="../_/img/Logo-Red_Hat-A-Reverse-RGB.png" height="40px" alt="Red Hat Telco Solutions"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="https://labs.sysdeseng.com">LAB - OCP AI Multicluster Inference</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://developers.redhat.com/ebooks/" target="_blank">Books</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">More Tutorials</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/kubernetes-tutorial/" target="_blank">Kubernetes</a>
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/istio-tutorial/" target="_blank">Istio</a>
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/quarkus-tutorial/" target="_blank">Quarkus</a>
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/knative-tutorial/" target="_blank">Knative</a>
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/tekton-tutorial/" target="_blank">Tekton</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="3.6" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="welcome.html"></a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="welcome.html">Welcome</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="welcome.html#ocp-ai-multicluster-inference-lab">Lab Introduction</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="welcome.html#showroom-intro">Introduction to the Showroom Environment</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="welcome.html#resizing-sections">Resizing App Sections</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="welcome.html#multiple-terminals">Opening Multiple Terminals</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="welcome.html#web-browser">Web Browser</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="welcome.html#current-contributors">Current Contributors</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="introduction.html">Introduction</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="introduction.html#lab-aim">Who Is This Lab Aimed At?</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="introduction.html#what-you-will-achieve">What You Will Achieve</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="introduction.html#lab-software-versions">Lab Software Versions</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="acronyms.html">Acronyms used in the lab</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="mci-intro.html">Introduction to Red Hat OpenShift AI Multi-Cluster Inference</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="mci-intro.html#service-provider-pov">Service Provider PoV</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="mci-intro.html#journey-to-multicluster-inference">The Journey to Multicluster Inference</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="mci-intro.html#distributed-multicluster-inference-architecture">Distributed Multi-Cluster Inference architecture</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="mci-intro.html#inference-entrypoint-clusters">Inference Entrypoint Clusters</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="mci-intro.html#inference-clusters">Inference Clusters</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="mci-intro.html#ai-gateways">AI Gateways</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="mci-intro.html#multicluster-inference-routing">Multi-Cluster Inference routing</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="mci-intro.html##why-multicluster-routing-is-hard">Why Multi-Cluster Routing is Hard</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="mci-intro.html#where-does-glbs-fit">Where does Global LoadBalancer Service Fit?</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="mci-intro.html#how-intelligent-routing-works">How Intelligent Routing works</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="mci-intro.html#keeping-the-kv-cache-warm">Keeping the KV Cache Warm</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="mci-intro.html#learning-the-grid-capacity">Learning the Grid Capacity</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item is-current-page" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="components-breakdown.html">Components Breakdown</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="#control-plane-components">Control Plane Components</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="#models-as-a-service">MaaS (Models as a Service)</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="#metering">Metering</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="#customer-portal-ui">Customer Portal UI</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="#data-plane-components">Data Plane Components</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="#AGN">AI Grid Networking</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#agn-sites">Provider and Consumer Sites</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#agn-swim">SWIM Membership and Gossip</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#agn-overlay">Routing Overlay and Candidates</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#agn-pki">Grid PKI</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="#llm-d">llm-d</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="#vllm">vLLM</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="personas.html">Personas</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="personas.html#persona-roles">Roles</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="personas.html#persona-comparison">Role comparison</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="personas.html#org-admin-boundary">What an Organization Admin can and cannot do</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="identity-management.html">Identity Management</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="identity-management.html#tenant-identity-onboarding">Tenant onboarding and identity integration</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="identity-management.html#breakglass">The breakglass account</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="identity-management.html#identity-sign-in-keys">Sign-in and API keys</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="identity-management.html#identity-auth-layers">Authentication layers</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="tenancy-model.html">Tenancy Model</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="tenancy-model.html#tenancy-subscriptions">Provider-issued subscriptions and entitlements</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="tenancy-model.html#tenancy-isolation">Isolation and the governance boundary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="welcome.html">LAB - OCP AI Multicluster Inference</a></li>
+    <li><a href="components-breakdown.html">Components Breakdown</a></li>
+  </ul>
+</nav>
+  <div class="edit-this-page"><a href="https://github.com/RHsyseng/ocp-ai-multicluster-inference/edit/lab-3.6/documentation/modules/ROOT/pages/components-breakdown.adoc">Edit this Page</a></div>
+  </div>
+  <div class="content">
+<article class="doc">
+<h1 class="page">Components Breakdown</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Multicluster Inference is composed of multiple components, in this section we will describe each of them and what part they take into the overall solution.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>AI Gateway</strong>: The tenant-facing entrypoint. Publishes a single OpenAI-compatible endpoint and enforces the MaaS policy surface (authentication, authorization, rate limiting, and token metering). Envoy-based in RHOAI 3.6, moving to Praxis in RHOAI 3.7.</p>
+</li>
+<li>
+<p><strong>AGN (AI Grid Network)</strong>: The Praxis control plane that discovers sites, tracks inference provider availability across clusters, and publishes the routing state that the Praxis gateways route from.</p>
+</li>
+<li>
+<p><strong>llm-d</strong>: The distributed serving stack running on each inference cluster. It takes the "last mile" routing decision, picking the pod that serves the request.</p>
+</li>
+<li>
+<p><strong>Metering</strong>: Per-tenant and per-user usage recording performed at the gateway, used for showback/chargeback.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The components are grouped into two planes:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <strong>control plane</strong> decides <strong>what should happen</strong>: who a tenant is, which models they can use, which clusters are eligible, and how usage is accounted. It never sits in the request hot path.</p>
+</li>
+<li>
+<p>The <strong>data plane</strong> does the actual work for every request: routing across clusters over mTLS and running inference.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="control-plane-components"><a class="anchor" href="#control-plane-components"></a>Control Plane Components</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="models-as-a-service"><a class="anchor" href="#models-as-a-service"></a>MaaS (Models as a Service)</h3>
+<div class="paragraph">
+<p>MaaS is the <strong>tenant-facing</strong> inference service layer on RHOAI. It provides API keys, subscriptions, a model catalog, authentication, authorization, and rate limiting in front of model serving. It is built from four layers:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 33.3333%;">
+<col style="width: 50.0001%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Layer</th>
+<th class="tableblock halign-left valign-top">Components</th>
+<th class="tableblock halign-left valign-top">Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Gateway</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Gateway API, Istio (Envoy)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Entry point for all traffic. <code>HTTPRoute</code> resources direct requests to the right model endpoint.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Policy</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Kuadrant (Authorino, Limitador) — Red Hat Connectivity Link</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enforce authentication, authorization, and rate limiting <strong>at the edge</strong>, before requests reach any model.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">API &amp; Token</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>maas-api</code>, PostgreSQL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">API-key lifecycle: mint, validate, and revoke <code>sk-oai-*</code> keys. Stores salted SHA-256 hashes and subscription bindings.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Model Serving</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Internal Models (llm-d, vLLM), External Models</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Run inference. Internal models run as vLLM pods on-cluster; external models proxy to a third-party API.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request flow</strong> when a user makes an inference request:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>The user gets an API key that provides access to a set of models.</p>
+</li>
+<li>
+<p>The user sends <code>POST /v1/chat/completions</code> with the API key.</p>
+</li>
+<li>
+<p>The request hits the MaaS Gateway, which matches it against <code>HTTPRoute</code> resources to pick the backend.</p>
+</li>
+<li>
+<p><strong>Authorino</strong> validates the key against <code>maas-api</code> (hash lookup in PostgreSQL), returning the identity and bound subscription. Unknown, revoked, or expired keys are rejected with <code>401 Unauthorized</code>.</p>
+</li>
+<li>
+<p><strong>Subscription check</strong>: is the user/group allowed this subscription, and is the requested model included in it? If not, <code>403 Forbidden</code>.</p>
+</li>
+<li>
+<p><strong>Limitador</strong> enforces the request/token limits from the <code>MaaSSubscription</code>. Over the limit returns <code>429 Too Many Requests</code>.</p>
+</li>
+<li>
+<p>The request is forwarded to the model (an internal vLLM pod via KServe, or an external API).</p>
+</li>
+<li>
+<p>The response returns through the Gateway, and usage counters (tokens, requests) are updated for the subscription.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>In the multicluster design, MaaS runs on the <strong>entrypoint cluster</strong> as part of the AI Gateway surface, while AGN federates the serving across inference clusters.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="metering"><a class="anchor" href="#metering"></a>Metering</h3>
+<div class="paragraph">
+<p>Metering records <strong>who consumed how much</strong>, so a provider can do showback or chargeback per tenant.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>What is recorded</strong>: tokens consumed and requests made, attributed <strong>per tenant admin and per user</strong>, captured <strong>at the gateway</strong> (Limitador usage counters feed the dashboards).</p>
+</li>
+<li>
+<p><strong>Where it surfaces</strong>: the observability dashboards (covered later in the lab); metrics carry the tenant name so usage can be filtered and attributed per tenant.</p>
+</li>
+<li>
+<p><strong>Cross-site spend</strong>: AGN can track per-tenant spend across the whole grid. Each site&#8217;s locally recorded spend is merged into a per-tenant CRDT counter gossiped over SWIM, so the reported total reflects spend recorded anywhere in the grid.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+In RHOAI 3.6 metering is <strong>token-based</strong> and is intended for <strong>showback</strong>, not billing-grade invoicing. The cross-site budget total is a <strong>signal only</strong>: AGN reports it but does not itself reject traffic when a cap is reached. GPU-hour metering, rate-card/billing export, and quota-enforcement actions are on the roadmap for later releases.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="customer-portal-ui"><a class="anchor" href="#customer-portal-ui"></a>Customer Portal UI</h3>
+<div class="paragraph">
+<p>A set of self-service UIs, one per persona.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Provider Admin UI</strong>: Fleet-wide view for the platform/provider admin: the AI Grid map, registered clusters, the model catalog, deployed models, and MaaS governance. This is where clusters are onboarded and models are published to the grid.</p>
+</li>
+<li>
+<p><strong>Tenant Admin UI</strong>: For the org/business-unit admin: browse the model catalog (including Red Hat AI validated models), see the tenant&#8217;s deployed models (internal and external), manage subscriptions, and grant users access within the tenant&#8217;s quota/isolation envelope.</p>
+</li>
+<li>
+<p><strong>Tenant User UI</strong>: For the data scientist or application engineer: manage API keys and subscriptions, and browse the AI asset endpoints (models and MCP servers) they are permitted to use.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="data-plane-components"><a class="anchor" href="#data-plane-components"></a>Data Plane Components</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="AGN"><a class="anchor" href="#AGN"></a>AI Grid Networking</h3>
+<div class="paragraph">
+<p>AI Grid Networking is the connective tissue between clusters. It is implemented by Praxis and spans both planes, with one strict boundary:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>AGN (control plane) decides what <strong>should</strong> be routable.</p>
+</li>
+<li>
+<p>Praxis AI (data plane) performs the actual request <strong>routing</strong>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The AGN operator <strong>never sits in the request hot path</strong>. It only configures the routing overlay the gateways route from.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The three gateway roles (Praxis Edge/Consumer and Praxis Provider) are introduced in <a href="mci-intro.html#ai-gateways" class="xref page">AI Gateways</a>, and the routing algorithm (filter → score → pick) in <a href="mci-intro.html#how-intelligent-routing-works" class="xref page">How Intelligent Routing works</a>.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="agn-sites"><a class="anchor" href="#agn-sites"></a>Provider and Consumer Sites</h4>
+<div class="paragraph">
+<p>A <strong>site</strong> is a participating cluster, represented by a <code>GridSite</code> resource. A site can act as a <strong>consumer</strong> (hosts the Edge/Consumer gateways that originate requests) and/or a <strong>provider</strong> (hosts the Provider gateways in front of serving backends).</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A <strong>provider site</strong> declares <code>InferenceProvider</code> resources. Its providers become routable elsewhere only after passing lifecycle, trust, freshness, placement, and access-policy checks.</p>
+</li>
+<li>
+<p>A <strong>consumer site</strong> hosts the gateway(s) that load the overlay and select providers.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Physical colocation does <strong>not</strong> make a provider automatically eligible: eligibility is governed by trust and policy, not by being on the same cluster. Private inference always goes through a Provider gateway, even within the same site.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="agn-swim"><a class="anchor" href="#agn-swim"></a>SWIM Membership and Gossip</h4>
+<div class="paragraph">
+<p>AGN uses <strong>SWIM</strong> for membership gossip, and <strong>CRDT</strong> state to advertise provider/site information between operators:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>SWIM answers: <strong>which peer AGN operators are alive?</strong></p>
+</li>
+<li>
+<p>CRDT answers: <strong>what provider and site state has each peer advertised?</strong></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>SWIM membership is <strong>site-granular</strong>: each AGN operator is a single SWIM node carrying its site&#8217;s identity, and SWIM members are <strong>other sites'</strong> operators.</p>
+</div>
+<div class="paragraph">
+<p>Each operator renders the overlay from <strong>its own local view</strong>: local Kubernetes CRDs, local observed provider/site status, and remote state received over SWIM/CRDT. Sites converge but are not guaranteed identical at every instant (rendering is reconcile-driven, not request-driven).</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+SWIM traffic can be encrypted with a shared 32-byte AES-256-GCM key; packets that fail authentication are dropped. A shared key only proves <strong>membership in the key group</strong>. <strong>SWIM membership is not authorization</strong>: a discovered peer must still pass identity and policy checks on every request.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="agn-overlay"><a class="anchor" href="#agn-overlay"></a>Routing Overlay and Candidates</h4>
+<div class="paragraph">
+<p>For each gateway reference on a <code>GridNetwork</code>, the operator writes a <strong>versioned routing overlay</strong>.</p>
+</div>
+<div class="paragraph">
+<p>The <strong>routing payload</strong> contains the local site name, <strong>candidate</strong> model/provider entries, candidate <strong>site and cluster identities</strong>, freshness/ordering information, and <strong>credential references</strong>.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Credential references contain locating information only. Token bytes are <strong>never</strong> written into overlays, ConfigMaps, status, or logs.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>A "candidate" is an eligible routing target (a model on a provider, reachable via Praxis).</p>
+</div>
+<div class="paragraph">
+<p>The routing overlay revision moves through four stages, which are useful when troubleshooting:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Stage</th>
+<th class="tableblock halign-left valign-top">Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rendered</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AGN produced a valid envelope and semantic revision.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Distributed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Kubernetes accepted the overlay ConfigMap (records its <code>resourceVersion</code>).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Accepted</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Praxis gateway validated the envelope and installed its in-memory snapshot.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Serving</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A request actually selected a route from that accepted snapshot.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="agn-pki"><a class="anchor" href="#agn-pki"></a>Grid PKI</h4>
+<div class="paragraph">
+<p>AGN manages control-plane trust material and can generate a <strong>Grid CA</strong> and <strong>site certificates</strong>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Site certificates follow the <strong>SPIFFE X.509-SVID leaf</strong> profile, where <code>OrganizationName</code> is the site name. That organization is the per-request identity a gateway filter can read; a certificate for the wrong site passes the TLS handshake but <strong>fails closed with 403</strong> at the filter.</p>
+</li>
+<li>
+<p><strong>Enrollment</strong> uses a one-time invite (<code>SiteInvite</code>) that pins the site name and jurisdictions and has a bounded lifetime (default is 24h). The token and Grid CA bundle are delivered out of band; the token is never published in status.</p>
+</li>
+<li>
+<p><strong>Peer trust modes</strong>:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>SPIFFE</strong>: admit any site presenting a certificate the Grid CA signed.</p>
+</li>
+<li>
+<p><strong>Pinning</strong>: admin only pre-configured certificates (current one&#8217;s fingerprint + rotated cert fingerprint).</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="llm-d"><a class="anchor" href="#llm-d"></a>llm-d</h3>
+<div class="paragraph">
+<p><strong>llm-d</strong> is the distributed LLM serving stack that runs on each inference cluster. Where AGN picks the <strong>cluster</strong>, llm-d picks the <strong>pod</strong>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <strong>Endpoint Picker (EPP)</strong> takes the "last mile" routing decision inside the cluster, choosing which serving pod handles a given request based on request-time signals (prefix affinity, per-pod load, and KV-cache state).</p>
+</li>
+<li>
+<p>It supports <strong>prefill/decode (P/D) disaggregation</strong>, splitting the compute-heavy prefill phase from the decode phase so the KV cache does not have to be re-sent.</p>
+</li>
+<li>
+<p>It is <strong>KV-cache aware</strong>: it keeps a conversation on a pod that already holds its prefix to maximize cache hits (faster first token, less GPU time).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The provider-level signals AGN scores on (queue depth, KV-cache saturation) come from the llm-d/vLLM pools. See <a href="mci-intro.html#how-intelligent-routing-works" class="xref page">How Intelligent Routing works</a> for how the grid-level and pod-level decisions combine.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="vllm"><a class="anchor" href="#vllm"></a>vLLM</h3>
+<div class="paragraph">
+<p><strong>vLLM</strong> is the high-throughput inference engine that actually runs the model on the GPU. It is the serving backend behind llm-d:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Exposes an <strong>OpenAI-compatible API</strong> (Chat Completions, and more), which is what lets the gateways present one uniform endpoint over many backends.</p>
+</li>
+<li>
+<p>Manages the <strong>KV (attention) cache</strong> per request, enabling the cache-hit optimizations described above.</p>
+</li>
+<li>
+<p>Exposes operational metrics (such as queue depth and KV-cache utilization) that are consumed upstream as the provider signals AGN and llm-d route on.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="mci-intro.html">Introduction to Red Hat OpenShift AI Multi-Cluster Inference</a></span>
+  <span class="next"><a href="personas.html">Personas</a></span>
+</nav>
+</article>
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <a class="rhd-logo" href="https://redhat.com" target="_blank"></div>
+</footer>
+<script src="../_/js/vendor/clipboard.js"></script>
+<script src="../_/js/site.js"></script>
+<script async src="../_/js/vendor/highlight.js"></script>
+<script src="../_/js/image-zoom.js"></script>
+  </body>
+</html>

@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Welcome to the Red Hat Lab 5G RAN RDS Deployments on OpenShift :: LAB - OCP AI Multicluster Inference</title>
+    <title>Welcome to the Red Hat Lab - AI Multicluster Inference on OpenShift :: LAB - OCP AI Multicluster Inference</title>
     <link rel="canonical" href="https://labs.sysdeseng.com/3.6/welcome.html">
     <link rel="next" href="introduction.html">
     <meta name="generator" content="Antora 3.0.0">
@@ -53,7 +53,7 @@
     <a class="nav-link" href="welcome.html">Welcome</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="#5g-ran-lab">Lab Introduction</a>
+    <a class="nav-link" href="#ocp-ai-multicluster-inference-lab">Lab Introduction</a>
   </li>
   <li class="nav-item" data-depth="2">
     <button class="nav-item-toggle"></button>
@@ -72,9 +72,6 @@
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="#current-contributors">Current Contributors</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="#past-contributors">Past Contributors</a>
   </li>
 </ul>
   </li>
@@ -98,494 +95,47 @@
   </li>
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="5g-ran-context.html">5G Ran Context</a>
+    <a class="nav-link" href="mci-intro.html">Introduction to Red Hat OpenShift AI Multi-Cluster Inference</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="5g-ran-context.html#low-latency">Low Latency</a>
+    <a class="nav-link" href="mci-intro.html#service-provider-pov">Service Provider PoV</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="5g-ran-context.html#numa-nodes">NUMA Nodes</a>
+    <a class="nav-link" href="mci-intro.html#journey-to-multicluster-inference">The Journey to Multicluster Inference</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="5g-ran-context.html#huge-pages">Huge Pages</a>
+    <a class="nav-link" href="mci-intro.html#distributed-multicluster-inference-architecture">Distributed Multi-Cluster Inference architecture</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="5g-ran-context.html#cpu-pinning">CPU Pinning</a>
+    <a class="nav-link" href="mci-intro.html#inference-entrypoint-clusters">Inference Entrypoint Clusters</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="5g-ran-context.html#irq-load-balancing">IRQ Load Balancing</a>
+    <a class="nav-link" href="mci-intro.html#inference-clusters">Inference Clusters</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="5g-ran-context.html#dpdk">DPDK</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="5g-ran-context.html#cpu-reduction-tuning">Tuning for CPU Reduction</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="5g-ran-context.html#vran-accelerators">vRAN Dedicated Accelerators</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="5g-ran-context.html#ptp">PTP</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="5g-ran-context.html#sriov">SR-IOV</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="sno-intro.html">Introduction to Single Node OpenShift (SNO)</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="sno-intro.html#5g-ran">5G Radio Access Network</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="sno-intro.html#things-keep-mind">Things to keep in mind</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="sno-intro.html#deployments">Deployments</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="sno-intro.html#extra-information">Extra information</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="telco-related-infra-operators-intro.html">Introduction to Telco Related Infrastructure Operators</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="telco-related-infra-operators-intro.html#node-tuning-operator">Node Tuning Operator</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="telco-related-infra-operators-intro.html#sriov-operator">SR-IOV Operator</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="telco-related-infra-operators-intro.html#ptp-operator">PTP Operator</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="telco-related-infra-operators-intro.html#accelerators-operators">Accelerators Operators</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="telco-related-infra-operators-intro.html#cluster-logging-operator">Cluster Logging Operator</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="telco-related-infra-operators-intro.html#lifecycle-operator">Lifecycle Agent Operator</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="telco-related-infra-operators-intro.html#storage-operator">Storage Operators</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="telco-related-infra-operators-intro.html#oadp-operator">OpenShift API for Data Protection Operator</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="ztp-intro.html">Introduction to Zero Touch Provisioning (ZTP)</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="ztp-intro.html#what-is-ztp">What is ZTP?</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="ocp-gitops.html">OpenShift GitOps</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="ocp-gitops.html#gitops">GitOps</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="ocp-gitops.html#gitops-principles">GitOps Principles</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="ocp-gitops.html#gitops-patterns-ocp">GitOps Patterns on OpenShift</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="ocp-gitops.html#directories-vs-branches">Directories vs Branches</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="ocp-gitops.html#direct-commit-to-main">Direct commit to main</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="ocp-gitops.html#prs-review-cycles">Pull Requests and review cycles</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="ocp-gitops.html#gitops-ocp">GitOps on OpenShift</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="ztp-at-scale.html">Hub Management Components</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="ztp-at-scale.html#rhacm">Red Hat Advanced Cluster Management</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="ztp-at-scale.html#mce">Multicluster Engine</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="ztp-at-scale.html#siteconfig">SiteConfig Operator</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="ztp-at-scale.html#ibio">Image Based Install Operator</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="ztp-at-scale.html#ai">Infrastructure Operator</a>
-  </li>
-</ul>
+    <a class="nav-link" href="mci-intro.html#ai-gateways">AI Gateways</a>
   </li>
   <li class="nav-item" data-depth="2">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="ztp-at-scale.html#gitops-operator">GitOps Operator</a>
+    <a class="nav-link" href="mci-intro.html#multicluster-inference-routing">Multi-Cluster Inference routing</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="ztp-at-scale.html#sitegen">SiteGen</a>
+    <a class="nav-link" href="mci-intro.html##why-multicluster-routing-is-hard">Why Multi-Cluster Routing is Hard</a>
   </li>
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="ztp-at-scale.html#policygen">PolicyGen</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="ztp-at-scale.html#talm">Topology Aware Lifecycle Manager</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="ztp-workflow.html">ZTP Workflow</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="ztp-workflow.html#deployment-methods">Single-Node OpenShift Deployments</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="ztp-workflow.html#abi-deployment">Agent Based Installation</a>
+    <a class="nav-link" href="mci-intro.html#where-does-glbs-fit">Where does Global LoadBalancer Service Fit?</a>
   </li>
   <li class="nav-item" data-depth="3">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="ztp-workflow.html#ibi-deployment">Image Based Installation</a>
+    <a class="nav-link" href="mci-intro.html#how-intelligent-routing-works">How Intelligent Routing works</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="4">
-    <a class="nav-link" href="ztp-workflow.html#ibi-deploy-components">Image Based Installation and Deployment Components</a>
+    <a class="nav-link" href="mci-intro.html#keeping-the-kv-cache-warm">Keeping the KV Cache Warm</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="mci-intro.html#learning-the-grid-capacity">Learning the Grid Capacity</a>
   </li>
 </ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="ztp-workflow.html#ztp-policies">Deployment Configuration</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="ztp-workflow.html#takeaways">Takeaways</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="rhacm-policies.html">RHACM Governance Policy Framework</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="rhacm-policies.html#policy-framework">Policy Framework</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="rhacm-policies.html#policies">Policies</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="rhacm-policies.html#policy-status">Policy Status</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="rhacm-policies.html#policy-remediation">Policy Remediation</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="rhacm-policies.html#rhacm-policies-takeaways">Takeaways</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="managing-at-scale.html">Managing at Scale</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="managing-at-scale.html#inform-policies">Inform Policies</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="managing-at-scale.html#olm-subscriptions">OLM Subscriptions</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="managing-at-scale.html#cluster-policies">Cluster Policies</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="lca.html">Lifecycle Agent Operator (LCA)</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="lca.html#seed-image-generation">Seed Image Generation</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="lca.html#image-based-installation">Image Based Installation</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="lca.html#image-based-upgrades">Image Based Upgrades</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="lca.html#image-based-upgrades-at-scale">Image Based Upgrades at Scale</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="talm.html">Topology Aware Lifecycle Manager (TALM)</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="talm.html#inform-policies">Default Inform Policies</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="talm.html#cgu">Cluster Group Upgrade</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="talm.html#autocreation-cgu">Auto Creation of CGUs</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="talm.html#phase-labels">Phase labels</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="talm.html#waves">Policy Waves</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="talm.html#sno-upgrades-at-scale">SNO Upgrades at Scale</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="policygen-deepdive.html">PolicyGen Deepdive</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="policygen-deepdive.html#policygen-implementation">PolicyGen Implementation</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="policygen-deepdive.html#kustomize-plugins">Kustomize Plugins</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="policygen-deepdive.html#policy-generator">Policy Generator</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="policygen-deepdive.html#5g-ran-profile">5G RAN Profile</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="policygen-deepdive.html#workload-partitioning">Workload Partitioning</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="policygen-deepdive.html#kubelet-tuning">Kubelet Tuning</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="policygen-deepdive.html#sctp">SCTP</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="policygen-deepdive.html#hide-container-mount">Container Mount Hiding</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="policygen-deepdive.html#monitoring-footprint">Monitoring Operator Config</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="policygen-deepdive.html#ocp-console">Console Operator</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="policygen-deepdive.html#networking-diags">Networking Operator</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="policygen-deepdive.html#operatorhub">OperatorHub</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="policygen-deepdive.html#ptp-operator">PTP Operator</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="policygen-deepdive.html#sr-iov">SR-IOV</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="policygen-deepdive.html#nto">Node Tuning Operator</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="policygen-deepdive.html#local-storage">Local Storage</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="policygen-deepdive.html#logs">Log Collector and Forwarder</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="policygen-deepdive.html#crun">crun Container Runtime</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="policygen-deepdive.html#policies-templating">Policies Templating</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="policygen-deepdive.html#custom-policy-templates">Policies Custom Templating</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="policygen-deepdive.html#kustomize-plugins-locally">Running Kustomize Plugins Locally</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="deployment-considerations.html">Deployment Considerations</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="deployment-considerations.html#hardware-configurations">Hardware configurations</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="deployment-considerations.html#bios-settings">Bios Settings</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="deployment-considerations.html#networking">Networking</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="deployment-considerations.html#disconnected-environments">Disconnected Environments</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="deployment-considerations.html#connected-proxy">Connected through proxy</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="deployment-considerations.html#fully-disconnected">Fully disconnected</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="deployment-considerations.html#git-repo-structure">Git Repository Structure</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="lab-environment-introduction.html">Introduction to the Lab Environment</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="lab-environment-introduction.html#git-server">Git Server</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="lab-environment-introduction.html#container-registry">Container Registry</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="lab-environment-introduction.html#openshift-hub-cluster">OpenShift Hub Cluster</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="lab-environment-introduction.html#webserver">HTTP Server</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="lab-environment-introduction.html#s3-storage">S3 Storage Server</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="lab-environment-introduction.html#openshift-seed-sno">OpenShift Seed SNO Cluster</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="preparing-ztp-pipeline.html">Preparing the ZTP GitOps Pipeline</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="preparing-ztp-pipeline.html#introduction-to-clusterinstance">Introduction to the ClusterInstance</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="preparing-ztp-pipeline.html#git-repository">Git Repository</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="preparing-ztp-pipeline.html#deploying-ztp-gitops-pipeline">Deploying the ZTP GitOps Pipeline</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="crafting-cluster-telco-related-infra-operators-configs.html">Crafting the Telco RAN Reference Design Specification</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="crafting-cluster-telco-related-infra-operators-configs.html#crafting-common-policies">Crafting Common Policies</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="crafting-cluster-telco-related-infra-operators-configs.html#crafting-group-policies">Crafting Group Policies</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="crafting-cluster-telco-related-infra-operators-configs.html#crafting-site-policies">Crafting Site Policies</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="crafting-cluster-telco-related-infra-operators-configs.html#adding-custom-policies">Adding Custom Content</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="crafting-cluster-telco-related-infra-operators-configs.html#crafting-testing-policies">Crafting Testing Policies</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="crafting-cluster-telco-related-infra-operators-configs.html#configure-kustomization-for-policies">Configure Kustomization for Policies</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="crafting-cluster-telco-related-infra-operators-configs.html#deploying-policies-using-gitops-pipeline">Deploying the Telco 5G RAN RDS using the ZTP GitOps Pipeline</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="installing-agentbasedinstall-cluster.html">Deploying an Agent Based Install Cluster</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="installing-agentbasedinstall-cluster.html#introduction">Introduction</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="installing-agentbasedinstall-cluster.html#baremetal-node-details">Bare Metal Node Details</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="installing-agentbasedinstall-cluster.html#pre-reqs">Deployment Prerequisites</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="installing-agentbasedinstall-cluster.html#clusterinstance">ClusterInstance</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="installing-agentbasedinstall-cluster.html#reference-manifest-clusterinstance">Reference Manifest Configuration</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="installing-agentbasedinstall-cluster.html#extra-manifest-clusterinstance">Extra Manifest Configuration</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="installing-agentbasedinstall-cluster.html#preparing-installation">Get Ready for the Installation</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="installing-agentbasedinstall-cluster.html#deploying-sno-using-gitops-pipeline">Deploying the SNO Cluster using the ZTP GitOps Pipeline</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="installing-agentbasedinstall-cluster.html#monitoring-deployment">Monitoring the Deployment</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="installing-agentbasedinstall-cluster.html#monitoring-deployment-webui">Monitoring the Deployment via the WebUI</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="installing-agentbasedinstall-cluster.html#monitoring-deployment-cli">Monitoring the Deployment via the CLI</a>
   </li>
 </ul>
   </li>
@@ -593,196 +143,100 @@
   </li>
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="creating-seed-image.html">Creating the Seed Image</a>
+    <a class="nav-link" href="components-breakdown.html">Components Breakdown</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="creating-seed-image.html#intro-to-seed-image-gen">Introduction to the Seed Image Generation</a>
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="components-breakdown.html#control-plane-components">Control Plane Components</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="components-breakdown.html#models-as-a-service">MaaS (Models as a Service)</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="components-breakdown.html#metering">Metering</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="components-breakdown.html#customer-portal-ui">Customer Portal UI</a>
+  </li>
+</ul>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="creating-seed-image.html#running-seed-image-genn">Running the Seed Image Generation</a>
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="components-breakdown.html#data-plane-components">Data Plane Components</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="components-breakdown.html#AGN">AI Grid Networking</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="components-breakdown.html#agn-sites">Provider and Consumer Sites</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="components-breakdown.html#agn-swim">SWIM Membership and Gossip</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="components-breakdown.html#agn-overlay">Routing Overlay and Candidates</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="components-breakdown.html#agn-pki">Grid PKI</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="components-breakdown.html#llm-d">llm-d</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="components-breakdown.html#vllm">vLLM</a>
+  </li>
+</ul>
   </li>
 </ul>
   </li>
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="installing-imagebaseinstall-cluster.html">Deploying an Image Based Install Cluster</a>
+    <a class="nav-link" href="personas.html">Personas</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="installing-imagebaseinstall-cluster.html#introduction">Introduction</a>
+    <a class="nav-link" href="personas.html#persona-roles">Roles</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="installing-imagebaseinstall-cluster.html#baremetal-node-details">Bare Metal Node Details</a>
+    <a class="nav-link" href="personas.html#persona-comparison">Role comparison</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="installing-imagebaseinstall-cluster.html#creating-the-installation-iso">Creating the Installation ISO</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="installing-imagebaseinstall-cluster.html#preinstallation-process">Pre-Installing the Host</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="installing-imagebaseinstall-cluster.html#creating-the-configuration-iso">Creating the Configuration ISO</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="installing-imagebaseinstall-cluster.html#deploying-sno-using-gitops-pipeline">Deploying the SNO Cluster using the ZTP GitOps Pipeline</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="installing-imagebaseinstall-cluster.html#completing-install">Completing the Installation</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="installing-imagebaseinstall-cluster.html#verifying-install">Verifying the RAN DU Configuration</a>
+    <a class="nav-link" href="personas.html#org-admin-boundary">What an Organization Admin can and cannot do</a>
   </li>
 </ul>
   </li>
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="check-deployment-is-finished.html">Check SNO Deployment is finished</a>
+    <a class="nav-link" href="identity-management.html">Identity Management</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="check-deployment-is-finished.html#check-sno-deployment-webui">Check SNO Deployment has Finished via the WebUI</a>
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="identity-management.html#tenant-identity-onboarding">Tenant onboarding and identity integration</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="identity-management.html#breakglass">The breakglass account</a>
+  </li>
+</ul>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="check-deployment-is-finished.html#check-sno-deployment-cli">Check SNO Deployment has Finished via the CLI</a>
+    <a class="nav-link" href="identity-management.html#identity-sign-in-keys">Sign-in and API keys</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="identity-management.html#identity-auth-layers">Authentication layers</a>
   </li>
 </ul>
   </li>
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="using-talm-to-update-clusters.html">Image-based Upgrade for SNO clusters</a>
+    <a class="nav-link" href="tenancy-model.html">Tenancy Model</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="using-talm-to-update-clusters.html#introduction">Introduction to Image-based Upgrades</a>
+    <a class="nav-link" href="tenancy-model.html#tenancy-subscriptions">Provider-issued subscriptions and entitlements</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="using-talm-to-update-clusters.html#verify-talm">Verifying Hub Software Requirements</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="using-talm-to-update-clusters.html#getting-snos-kubeconfigs">Verifying Managed Clusters Requirements</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="using-talm-to-update-clusters.html#install-lca">Preparing Managed Clusters for Upgrade</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="using-talm-to-update-clusters.html#upgrade-policy-creation">Creating the Image Base Group Upgrade</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="using-talm-to-update-clusters.html#monitoring-ibu">Monitoring the Image Based Group Upgrade </a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="troubleshooting-tips.html">Troubleshooting Tips</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="troubleshooting-tips.html#verification-lab">Verification of the lab status</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="troubleshooting-tips.html#containerized-infra">Containerized Infrastructure Services</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="troubleshooting-tips.html#sno-vms">SNO Virtual Machines</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="troubleshooting-tips.html#hub">Hub cluster</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="troubleshooting-tips.html#dns">DNS resolution</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="troubleshooting-tips.html#policies-blank">Policies not showing in the Governance console</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="troubleshooting-tips.html#policies-not-applied">Policies not applied</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="common-pitfalls.html">Common Pitfalls</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="common-pitfalls.html#exec-probes-cpu-pinning">Exec Probes and CPU Pinning</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="common-pitfalls.html#energy-saving-hw-profiles">Energy Saving Hardware Profiles</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="common-pitfalls.html#secure-boot-oot-unsigned-drivers">Secure Boot and Unsigned OoT Drivers</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="common-pitfalls.html#sriov-node-drain">SR-IOV Node Drain</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="common-pitfalls.html#pod-disruption-budgets">Pod Disruption Budgets</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="closing-thoughts.html">Closing Thoughts</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="lab-environment-ansible.html">Lab Environment</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="lab-environment-ansible.html#lab-requirements">Lab Requirements</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="lab-environment-ansible.html#role-overview">OCP4 5G RAN Role Overview</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="lab-environment-ansible.html#inventory">Inventory File</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="lab-environment-ansible.html#playbook-run-role">The Playbook</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="lab-environment-ansible.html#preworkload-tasks-overview">Pre-Workload Tasks</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="lab-environment-ansible.html#i#what-preworkload-does">What Pre-Workload Does</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="lab-environment-ansible.html#key-services-deployed">Key Services Deployed</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="lab-environment-ansible.html#preworkload-troubleshooting">Troubleshooting</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="lab-environment-ansible.html#preworkload-time">Time Requirements</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="lab-environment-ansible.html#workload-tasks-overview">Workload Tasks</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="lab-environment-ansible.html#what-workload-does">What Workload Does</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="lab-environment-ansible.html#workload-key-components">Key Components Deployed</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="lab-environment-ansible.html#workload-deployment">Deployment Phases</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="lab-environment-ansible.html#workload-troubleshooting">Troubleshooting</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="lab-environment-ansible.html#workload-time">Time Requirements</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="lab-environment-ansible.html#next-steps">Next Steps</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="lab-environment-ansible.html#delete-environment">Delete The Environment</a>
+    <a class="nav-link" href="tenancy-model.html#tenancy-isolation">Isolation and the governance boundary</a>
   </li>
 </ul>
   </li>
@@ -807,12 +261,34 @@
   </div>
   <div class="content">
 <article class="doc">
-<h1 class="page">Welcome to the Red Hat Lab 5G RAN RDS Deployments on OpenShift</h1>
+<h1 class="page">Welcome to the Red Hat Lab - AI Multicluster Inference on OpenShift</h1>
 <div class="sect1 text-center strong">
-<h2 id="5g-ran-lab"><a class="anchor" href="#5g-ran-lab"></a>Red Hat Lab - 5G RAN RDS Deployments on OpenShift</h2>
+<h2 id="ocp-ai-multicluster-inference-lab"><a class="anchor" href="#ocp-ai-multicluster-inference-lab"></a>Red Hat Lab - AI Multicluster Inference on OpenShift</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This lab will guide you through the deployment of a RAN ready infrastructure following the Reference Design Specification (RDS) crafted by the Red Hat CNF team. The lab consists of two parts, the first part introduces essential concepts for planning and executing a 5G RAN Deployment on OpenShift. The second part involves a practical scenario where you will deploy RAN-enabled OCP using ZTP technologies and methodologies.</p>
+<p>This lab guides you through configuring and operating an <strong>AI multicluster
+inference</strong> platform built on Red Hat OpenShift AI (RHOAI). It is delivered
+through the <strong>Showroom</strong> environment: lab content on the left, and the lab
+environment (terminals and a web browser) on the right.</p>
+</div>
+<div class="paragraph">
+<p>The lab has two parts:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Part one (theory)</strong> introduces the concepts needed to plan and reason about a
+distributed, multi-cluster inference deployment: the architecture, how routing
+works across clusters, the components involved, the personas, identity, and the
+tenancy model.</p>
+</li>
+<li>
+<p><strong>Part two (hands-on)</strong> walks through building the platform: onboarding
+inference clusters into a grid, deploying models, configuring smart routing,
+onboarding tenants, and testing the end-to-end experience through a single
+endpoint.</p>
+</li>
+</ul>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -821,7 +297,7 @@
 <i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-This is not an official Red Hat Training. Please, contact with your Red Hat representative if you want more information about Training or Guidelines about this topic / product.
+This is not official Red Hat Training. Contact your Red Hat representative for training or product guidance.
 </td>
 </tr>
 </table>
@@ -949,79 +425,12 @@ This is not an official Red Hat Training. Please, contact with your Red Hat repr
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Alberto Losada</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Karim Boumedhel</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Lab Developer / Maintainer</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Ian Miller</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Lab Reviewer / CNF Developer</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Juan Carlos Tovar</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Lab Reviewer</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Mario Vázquez</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Lab Developer / Maintainer</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="sect1">
-<h2 id="past-contributors"><a class="anchor" href="#past-contributors"></a>Past Lab Contributors</h2>
-<div class="sectionbody">
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Name</th>
-<th class="tableblock halign-left valign-top">Role</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Alberto Losada</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Lab Developer / Maintainer</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Ethan Siegel</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Lab Contributor</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Ian Miller</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Lab Contributor / CNF Developer</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Mario Vázquez</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Lab Developer / Maintainer</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Leo Ochoa</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Lab Reviewer</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Scott Collier</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Lab Reviewer</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Rob Fisher</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Lab Reviewer</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Federico Ferrando</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Lab Reviewer</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Daniel Munné</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Lab Reviewer</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">John Herr</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Lab Reviewer</p></td>
 </tr>
 </tbody>
 </table>
@@ -1037,146 +446,12 @@ This is not an official Red Hat Training. Please, contact with your Red Hat repr
   </div>
 </main>
 </div>
-
-<!-- OUTDATED LAB -->
-
-<style>
-/* The Modal (background) */
-.modal {
-  display: none; /* Hidden by default */
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
-  padding-top: 100px; /* Location of the box */
-  left: 0;
-  top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0,0,0); /* Fallback color */
-  background-color: rgba(0,0,0,0); /* Black w/ opacity */
-}
-
-/* Modal Content */
-.modal-content {
-  position: relative;
-  background-color: #fefefe;
-  margin: auto;
-  padding: 10;
-  top: 10%;
-  left: 1%;
-  border: 1px solid #888;
-  width: 80%;
-  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
-  -webkit-animation-name: animatetop;
-  -webkit-animation-duration: 0.4s;
-  animation-name: animatetop;
-  animation-duration: 0.4s
-}
-
-/* Add Animation */
-@-webkit-keyframes animatetop {
-  from {top:-300px; opacity:0} 
-  to {top:10%; opacity:1}
-}
-
-@keyframes animatetop {
-  from {top:-300px; opacity:0}
-  to {top:10%; opacity:1}
-}
-
-/* The Close Button */
-.close {
-  color: white;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-  color: #000;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.modal-header {
-  padding: 2px 16px;
-  background-color: #FF0000;
-  color: white;
-}
-
-.modal-body {padding: 2px 16px;}
-</style>
-
-<!-- The Modal -->
-<div id="outdatedlab-modal" class="modal">
-
-  <!-- Modal content -->
-  <div class="modal-content">
-    <div class="modal-header">
-      <span class="close">&times;</span>
-      <h2>Outdated Lab</h2>
-    </div>
-    <div class="modal-body">
-      <p>You're searching and old version of the lab.</p>
-      <p><a id="newlaburl" href="https://github.com/RHsyseng/5g-ran-deployments-on-ocp-lab/">Go to latest</a></p>
-    </div>
-  </div>
-
-</div>
-
-<script>
-// Get the modal
-var modal = document.getElementById("outdatedlab-modal");
-
-// Get the <span> element that closes the modal
-var span = document.getElementsByClassName("close")[0];
-
-// When the user clicks on <span> (x), close the modal
-span.onclick = function() {
-  modal.style.display = "none";
-}
-
-function getLatestLabURL(){
-  const repoUrl = 'https://api.github.com/repos/RHsyseng/5g-ran-deployments-on-ocp-lab';
-  return fetch(repoUrl)
-  .then(response => response.json())
-  .then(data => {
-    const defaultBranch = data.default_branch;
-    return defaultBranch;
-  })
-  .catch(error => {
-    return "notFound";
-  });
-}
-
-document.addEventListener('DOMContentLoaded', function () {
-  const latestLabURLPromise = getLatestLabURL();
-  latestLabURLPromise.then(latestLabURL => {
-    if(latestLabURL != "notFound") {
-      var newLabUrl = document.getElementById("newlaburl");
-      newLabUrl.href = "https://labs.sysdeseng.com/5g-ran-deployments-on-ocp-lab/"+latestLabURL.replace("lab-","")+"/index.html"
-    }
-  });
-  modal.style.display = 'block';
-  });
-
-
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-  if (event.target == modal) {
-    modal.style.display = "none";
-  }
-}
-</script>
-
-<!-- ORIGINAL FOOTER -->
-
 <footer class="footer">
   <a class="rhd-logo" href="https://redhat.com" target="_blank"></div>
 </footer>
 <script src="../_/js/vendor/clipboard.js"></script>
 <script src="../_/js/site.js"></script>
 <script async src="../_/js/vendor/highlight.js"></script>
+<script src="../_/js/image-zoom.js"></script>
   </body>
 </html>

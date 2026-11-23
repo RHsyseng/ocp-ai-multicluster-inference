@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Identity Management :: LAB - OCP AI Multicluster Inference</title>
+    <link rel="canonical" href="https://labs.sysdeseng.com/3.6/identity-management.html">
+    <link rel="prev" href="personas.html">
+    <link rel="next" href="tenancy-model.html">
+    <meta name="generator" content="Antora 3.0.0">
+    <link rel="stylesheet" href="../_/css/site.css">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com/en/solutions/telecommunications" target="_blank"><img src="../_/img/Logo-Red_Hat-A-Reverse-RGB.png" height="40px" alt="Red Hat Telco Solutions"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="https://labs.sysdeseng.com">LAB - OCP AI Multicluster Inference</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://developers.redhat.com/ebooks/" target="_blank">Books</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">More Tutorials</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/kubernetes-tutorial/" target="_blank">Kubernetes</a>
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/istio-tutorial/" target="_blank">Istio</a>
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/quarkus-tutorial/" target="_blank">Quarkus</a>
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/knative-tutorial/" target="_blank">Knative</a>
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/tekton-tutorial/" target="_blank">Tekton</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="3.6" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="welcome.html"></a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="welcome.html">Welcome</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="welcome.html#ocp-ai-multicluster-inference-lab">Lab Introduction</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="welcome.html#showroom-intro">Introduction to the Showroom Environment</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="welcome.html#resizing-sections">Resizing App Sections</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="welcome.html#multiple-terminals">Opening Multiple Terminals</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="welcome.html#web-browser">Web Browser</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="welcome.html#current-contributors">Current Contributors</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="introduction.html">Introduction</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="introduction.html#lab-aim">Who Is This Lab Aimed At?</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="introduction.html#what-you-will-achieve">What You Will Achieve</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="introduction.html#lab-software-versions">Lab Software Versions</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="acronyms.html">Acronyms used in the lab</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="mci-intro.html">Introduction to Red Hat OpenShift AI Multi-Cluster Inference</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="mci-intro.html#service-provider-pov">Service Provider PoV</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="mci-intro.html#journey-to-multicluster-inference">The Journey to Multicluster Inference</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="mci-intro.html#distributed-multicluster-inference-architecture">Distributed Multi-Cluster Inference architecture</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="mci-intro.html#inference-entrypoint-clusters">Inference Entrypoint Clusters</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="mci-intro.html#inference-clusters">Inference Clusters</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="mci-intro.html#ai-gateways">AI Gateways</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="mci-intro.html#multicluster-inference-routing">Multi-Cluster Inference routing</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="mci-intro.html##why-multicluster-routing-is-hard">Why Multi-Cluster Routing is Hard</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="mci-intro.html#where-does-glbs-fit">Where does Global LoadBalancer Service Fit?</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="mci-intro.html#how-intelligent-routing-works">How Intelligent Routing works</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="mci-intro.html#keeping-the-kv-cache-warm">Keeping the KV Cache Warm</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="mci-intro.html#learning-the-grid-capacity">Learning the Grid Capacity</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="components-breakdown.html">Components Breakdown</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="components-breakdown.html#control-plane-components">Control Plane Components</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="components-breakdown.html#models-as-a-service">MaaS (Models as a Service)</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="components-breakdown.html#metering">Metering</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="components-breakdown.html#customer-portal-ui">Customer Portal UI</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="components-breakdown.html#data-plane-components">Data Plane Components</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="components-breakdown.html#AGN">AI Grid Networking</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="components-breakdown.html#agn-sites">Provider and Consumer Sites</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="components-breakdown.html#agn-swim">SWIM Membership and Gossip</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="components-breakdown.html#agn-overlay">Routing Overlay and Candidates</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="components-breakdown.html#agn-pki">Grid PKI</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="components-breakdown.html#llm-d">llm-d</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="components-breakdown.html#vllm">vLLM</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="personas.html">Personas</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="personas.html#persona-roles">Roles</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="personas.html#persona-comparison">Role comparison</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="personas.html#org-admin-boundary">What an Organization Admin can and cannot do</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item is-current-page" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="identity-management.html">Identity Management</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="#tenant-identity-onboarding">Tenant onboarding and identity integration</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="#breakglass">The breakglass account</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="#identity-sign-in-keys">Sign-in and API keys</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="#identity-auth-layers">Authentication layers</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="tenancy-model.html">Tenancy Model</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="tenancy-model.html#tenancy-subscriptions">Provider-issued subscriptions and entitlements</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="tenancy-model.html#tenancy-isolation">Isolation and the governance boundary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="welcome.html">LAB - OCP AI Multicluster Inference</a></li>
+    <li><a href="identity-management.html">Identity Management</a></li>
+  </ul>
+</nav>
+  <div class="edit-this-page"><a href="https://github.com/RHsyseng/ocp-ai-multicluster-inference/edit/lab-3.6/documentation/modules/ROOT/pages/identity-management.adoc">Edit this Page</a></div>
+  </div>
+  <div class="content">
+<article class="doc">
+<h1 class="page">Identity Management</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>In the OpenShift AI v3.6 organization onboarding model, identity is federated <strong>per organization</strong>. Each organization integrates its <strong>own</strong> identity provider (via OpenID Connect), and from there it can onboard its users into the platform.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="tenant-identity-onboarding"><a class="anchor" href="#tenant-identity-onboarding"></a>Organization onboarding and identity integration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Identity is bootstrapped by the cloud provider and then handed over to the organization:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>The provider onboards the organization</strong>: Onboarding creates an <strong>Organization Admin breakglass account</strong> (an initial, provider-issued credential for the Organization Admin).</p>
+</li>
+<li>
+<p><strong>The Organization Admin onboards their organization</strong>: Using the breakglass account, the Organization Admin connects the organization&#8217;s own identity provider through <strong>OpenID Connect (OIDC)</strong>.</p>
+</li>
+<li>
+<p><strong>The organization manages its own identity</strong>: From then on, the organization handles user management, groups, and membership entirely in <strong>its own IdP</strong>. The provider does not manage the organization&#8217;s users or groups.</p>
+</li>
+<li>
+<p><strong>Each organization has its own integration</strong>: Every organization connects its own IdP independently of the other organizations on the platform.</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Providing and maintaining the IdP, the OIDC integration, and the organization&#8217;s users and groups are <strong>organization responsibilities</strong>. The provider is responsible for onboarding the organization, issuing the breakglass account, and issuing the organization&#8217;s subscriptions and entitlements.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="breakglass"><a class="anchor" href="#breakglass"></a>The breakglass account</h3>
+<div class="paragraph">
+<p>The Organization Admin breakglass account is <strong>not deleted</strong> after the organization connects its IdP. It is retained as a <strong>recovery mechanism</strong>: if the organization&#8217;s IdP integration fails or access is otherwise lost, the breakglass account can be used to regain access to the organization and repair the integration.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Treat the breakglass account as a privileged credential. Store it securely and reserve it for recovery scenarios; day-to-day access should go through the organization&#8217;s own IdP.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="identity-sign-in-keys"><a class="anchor" href="#identity-sign-in-keys"></a>Sign-in and API keys</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>An Organization User signs in through the organization&#8217;s own IdP (OIDC). The IdP passes the user&#8217;s group claims, which MaaS uses together with the provider-issued subscriptions and access policies to decide which models the user can access.</p>
+</li>
+<li>
+<p>After signing in, a user can create API keys and use them for authorized inference requests.</p>
+</li>
+<li>
+<p>API key secrets are never displayed in the administration view; only metadata (name, status, subscription, owner, creation/last-used/expiration dates) is shown.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Protecting, creating, using, and revoking keys follows the canonical MaaS API-key lifecycle.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="identity-auth-layers"><a class="anchor" href="#identity-auth-layers"></a>Authentication layers</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A request crosses more than one trust boundary, and they must not be conflated:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 40%;">
+<col style="width: 40%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Layer</th>
+<th class="tableblock halign-left valign-top">What it authenticates</th>
+<th class="tableblock halign-left valign-top">Who owns it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">External caller</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Organization User or application (API key)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enforced at the gateway, before routing.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Cross-cluster destination</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The platform authenticating to a selected inference cluster</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A platform responsibility, not an application workflow.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Backend / serving</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The inference cluster&#8217;s local model-serving authorization</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The cloud provider (serving cluster).</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The caller&#8217;s credential is an application access credential (it is not forwarded as a destination credential). Applications do not manage a separate credential per cluster. For the certificate and mTLS details behind the cross-cluster layer, see <a href="components-breakdown.html#agn-pki" class="xref page">Grid PKI</a>.</p>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="personas.html">Personas</a></span>
+  <span class="next"><a href="tenancy-model.html">Tenancy Model</a></span>
+</nav>
+</article>
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <a class="rhd-logo" href="https://redhat.com" target="_blank"></div>
+</footer>
+<script src="../_/js/vendor/clipboard.js"></script>
+<script src="../_/js/site.js"></script>
+<script async src="../_/js/vendor/highlight.js"></script>
+<script src="../_/js/image-zoom.js"></script>
+  </body>
+</html>
