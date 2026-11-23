@@ -30,15 +30,15 @@ This role https://github.com/RHsyseng/agnosticd/tree/development/ansible/roles_o
 * The https://github.com/RHsyseng/agnosticd/blob/development/ansible/roles_ocp_workloads/ocp4_workload_5gran_deployments_lab/tasks/pre_workload.yml[pre_workload.yml] file contains the initial setup and preparation.
 * The https://github.com/RHsyseng/agnosticd/blob/development/ansible/roles_ocp_workloads/ocp4_workload_5gran_deployments_lab/tasks/workload.yml[workload.yml] file contains the main deployment tasks that create and configures the lab.
 * The https://github.com/RHsyseng/agnosticd/blob/development/ansible/roles_ocp_workloads/ocp4_workload_5gran_deployments_lab/defaults/main.yml[defaults/main.yml] file contains the default configuration variables for the 5G RAN lab deployment.
-* The `run-role.yaml` file is the playbook that runs the role along with the variables customized for you environment.
+* The `run-role.yaml` file is the playbook that runs the role along with the variables customized for your environment.
 * The `inventory` file contains the hypervisor where the lab is going to be deployed.
 
-IMPORTANT: There are variables that might be adjusted for your environment. They can be included as variables in the ansible-playbook command-line, however, we suggest to be added in the `run-role.yaml` Ansible playbook.
+IMPORTANT: There are variables that might be adjusted for your environment. They can be included as variables in the ansible-playbook command-line, however, we suggest adding them in the `run-role.yaml` Ansible playbook.
 
 Let's dive into the different files:
 
 [#inventory]
-== Inventory FIle
+== Inventory File
 
 The inventory includes the IP address of the hypervisor. Here you can see an example of the inventory file for my lab:
 
@@ -52,11 +52,11 @@ The inventory includes the IP address of the hypervisor. Here you can see an exa
 [#playbook-run-role]
 == The Playbook
 
-The `run-role.yaml` playbook basically includes the `ocp4_workload_5gran_deployments_lab` Ansible role and adjustes the variables to the proper environment where the lab is about to be deployed.
+The `run-role.yaml` playbook basically includes the `ocp4_workload_5gran_deployments_lab` Ansible role and adjusts the variables to the proper environment where the lab is about to be deployed.
 
 The following playbook probably will just work for you except for the `ocp4_pull_secret` which has to be replaced by your personal OpenShift Pull Secret. Notice that the default upstream DNS is set to 1.1.1.1. There might be cases in your local environment where the hypervisor may not reach it. So, notice that you must change it to a different DNS that allows you to resolve public hostnames.
 
-CAUTION: The variables that includes the `do not change` comment as set explicitly this way because the deployment we want here is on a local hypervisor.
+CAUTION: The variables that include the `do not change` comment are set explicitly this way because the deployment we want here is on a local hypervisor.
 
 [.console-input]
 [source,bash,subs="attributes+,+macros"]
@@ -228,7 +228,7 @@ If pre-workload fails, check:
 [#preworkload-time]
 === Time Requirements
 
-CAUTION: This is a estimation based on our experience and our environment.
+CAUTION: This is an estimation based on our experience and our environment.
 
 * *Typical duration*: 30-45 minutes.
 * *Slow internet*: 45-60 minutes.
@@ -263,16 +263,16 @@ The workload phase deploys the complete 5G RAN lab environment by:
 4. Multi-Cluster Management Setup
 * *Installs MultiClusterHub*: Deploys Red Hat Advanced Cluster Management.
 * *Configures MultiClusterEngine*: Sets up multi-cluster management capabilities.
-* *Waits for readiness*: Ensures MCH and MCE are running and available before continue.
+* *Waits for readiness*: Ensures MCH and MCE are running and available before continuing.
 
 5. SNO Seed Cluster Deployment
-* *Deploys SNO cluster**: Creates Single Node OpenShift cluster via ArgoCD.
-* *Extracts kubeconfig**: Retrieves SNO cluster kubeconfig for management.
+* *Deploys SNO cluster*: Creates Single Node OpenShift cluster via ArgoCD.
+* *Extracts kubeconfig*: Retrieves SNO cluster kubeconfig for management.
 
 6. SNO Seed Cluster Operators Installation
 * *Downloads operator manifests*: Retrieves manifests for telco-specific operators.
 * *Installs operators*: Deploys OADP, LCA, LVMS, SR-IOV, Logging, and PTP operators.
-* *Verifies operator status*: Confirms operators are in "Succeeded" state before continue.
+* *Verifies operator status*: Confirms operators are in "Succeeded" state before continuing.
 
 7. SNO Seed Network Configuration
 * *Configures SR-IOV*: Sets up Single Root I/O Virtualization for high-performance networking.
@@ -308,7 +308,7 @@ For SNO Cluster Components:
 [#workload-deployment]
 === Deployment Phases
 
-CAUTION: This is a estimation based on our experience and our environment.
+CAUTION: This is an estimation based on our experience and our environment.
 
 Phase 1: Hub Cluster (30-45 minutes)
 
@@ -363,7 +363,7 @@ oc get node openshift-master-0 -o json --kubeconfig /home/lab-user/seed-cluster-
 **Multi-Cluster Setup**: 15-30 minutes.
 **SNO Cluster**: 45-60 minutes.
 
-**Total Duration**: 90-135 minutes aprox.
+**Total Duration**: 90-135 minutes approx.
 
 [#next-steps]
 == Next Steps
@@ -378,7 +378,7 @@ The workload phase creates a complete 5G RAN RDS lab environment ready for advan
 
 After successful workload deployment:
 
-1. **Access the lab**: Use the showroom interface. Showroom is a WebAPP consisting of different services that will be used to expose the lab content and a terminal and a browser running on the hypervisor host, that way uses can consume the lab from their browser without extra requirements. At this point we can access our hypervisor to get the Showroom app, this URL is the one the student will use with the credentials we configured. Example url: https://hypervisor.example.com/content/.
+1. **Access the lab**: Use the showroom interface. Showroom is a WebAPP consisting of different services that will be used to expose the lab content and a terminal and a browser running on the hypervisor host, that way users can consume the lab from their browser without extra requirements. At this point we can access our hypervisor to get the Showroom app, this URL is the one the student will use with the credentials we configured. Example url: https://hypervisor.example.com/content/.
 2. **Run lab exercises**: Follow the https://labs.sysdeseng.com/5g-ran-deployments-on-ocp-lab/{lab-major-version}/welcome.html[5G RAN RDS deployments lab].
 
 [#delete-environment]

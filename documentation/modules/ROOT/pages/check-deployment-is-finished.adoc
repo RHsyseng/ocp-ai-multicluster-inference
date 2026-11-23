@@ -2,7 +2,7 @@
 include::_attributes.adoc[]
 :profile: 5g-ran-lab
 
-In the previous section we have learned how to follow the cluster deployment process, but the cluster finished its deployment doesn't mean that the SNO deployment is complete.
+In the previous section we have learned how to follow the cluster deployment process, but the cluster finishing its deployment doesn't mean that the SNO deployment is complete.
 
 We say that the SNO deployment finished when the SNO cluster has been deployed *and* day2 configurations have been applied. In this section we will learn how to verify that the configs have been applied and our sno-abi is ready to run 5G RAN workloads.
 
@@ -22,7 +22,7 @@ Notice that the sno-ibi node was already deployed and configured with the telco 
 +
 image::acm-sno-abi-policies-done.png[RHACM SNO ABI policies done]
 +
-IMPORTANT: See that the policies in the Governance section are also compliant for the `sno-ibi` cluster even they were not applied via RHACM Policies. They were included in the seed image that was used to provision it and afterwards executed the reconfiguration process using the link:installing-imagebaseinstall-cluster.html#creating-the-configuration-iso[configuration ISO].
+IMPORTANT: See that the policies in the Governance section are also compliant for the `sno-ibi` cluster even though they were not applied via RHACM Policies. They were included in the seed image that was used to provision it and afterwards executed the reconfiguration process using the link:installing-imagebaseinstall-cluster.html#creating-the-configuration-iso[configuration ISO].
 +
 4. At this point the `sno-abi` is ready to run 5G RAN workloads *too*.
 

@@ -55,7 +55,7 @@ An **entrypoint cluster** is where client traffic arrives. It hosts the **MaaS A
 - Selecting an eligible **provider** from the locally-loaded routing overlay and forwarding over cross-site mTLS.
 - Recording usage (tokens, and in later phases GPU-hours) per organization and per user at the gateway.
 
-Entrypoint clusters do **not** need to host GPUs. In a multi-region design there are multiple entrypoint clusters (for example one per region), each publishing a region-local endpoint, with a GLBS in front of them).
+Entrypoint clusters do **not** need to host GPUs. In a multi-region design there are multiple entrypoint clusters (for example one per region), each publishing a region-local endpoint, with a GLBS in front of them.
 
 [#inference-clusters]
 === Inference Clusters
@@ -69,7 +69,7 @@ An **inference cluster** is where models actually run. It hosts the **Praxis Pro
 
 Inference clusters can be heterogeneous (different GPU vendors/generations), different locations (central hall, edge site, sovereign enclave, partner DC), and can expose both **shared** models (available to many organizations) and **dedicated** models (restricted to a single customer; for example a `GPT-OSS (vLLM)` endpoint that only Customer B can access).
 
-NOTE: Bring your own model feature won't be available during the RHOAI 3.6 release, it's a feature expected for RHOAI 3.7.
+NOTE: The Bring your own model feature won't be available during the RHOAI 3.6 release; it's a feature expected for RHOAI 3.7.
 
 [#ai-gateways]
 === AI Gateways

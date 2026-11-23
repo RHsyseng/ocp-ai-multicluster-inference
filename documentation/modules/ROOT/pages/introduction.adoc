@@ -4,7 +4,7 @@ include::_attributes.adoc[]
 
 Welcome to this lab focused on AI multicluster inference using OpenShift AI, designed to enhance your understanding and practical skills.
 
-The first part of this lab introduces the essential concepts for planning and executing an AI multicluster inference deployment on OpenShift. The second part involves practical scenario where you will configure the inference infrastructure to support distributed multicluster inference requests.
+The first part of this lab introduces the essential concepts for planning and executing an AI multicluster inference deployment on OpenShift. The second part involves a practical scenario where you will configure the inference infrastructure to support distributed multicluster inference requests.
 
 [#lab-aim]
 == Who Is This Lab Aimed At?
