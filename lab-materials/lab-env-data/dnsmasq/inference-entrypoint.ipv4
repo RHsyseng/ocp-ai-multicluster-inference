@@ -1,0 +1,4 @@
+host-record=api-int.inference-entrypoint.grid.lab,192.168.125.30
+host-record=api.inference-entrypoint.grid.lab,192.168.125.30
+address=/apps.inference-entrypoint.grid.lab/192.168.125.30
+dhcp-host=aa:aa:aa:aa:02:01,inference-entrypoint,192.168.125.30

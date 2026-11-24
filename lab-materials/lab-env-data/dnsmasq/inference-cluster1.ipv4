@@ -1,0 +1,4 @@
+host-record=api-int.inference-cluster1.grid.lab,192.168.125.40
+host-record=api.inference-cluster1.grid.lab,192.168.125.40
+address=/apps.inference-cluster1.grid.lab/192.168.125.40
+dhcp-host=aa:aa:aa:aa:03:01,inference-cluster1,192.168.125.40
