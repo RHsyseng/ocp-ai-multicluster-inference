@@ -10,7 +10,7 @@ In this section, we will provide some useful tips to troubleshoot any issue that
 [#containerized-infra]
 === Containerized Infrastructure Services
 
-There are several infrastructure services that run as containers such as the Git server or the container registry. Below the list of containers that should be running.
+There are several infrastructure services that run as containers such as the Git server or the container registry. Below is the list of containers that should be running.
 
 All these containers are managed via the following systemd services:
 
@@ -147,7 +147,7 @@ openshift-marketplace   cs-redhat-operator-index-v4-18-174293             grpc  
 
 Verify that the OpenShift API and the apps domain (wildcard) can be resolved.
 
-IMPORTANT: `dig` command is not part of the standard linux utilities (you may need to install it), in RHEL-based systems is part of the `bind-utils` package.
+IMPORTANT: `dig` command is not part of the standard linux utilities (you may need to install it), in RHEL-based systems it is part of the `bind-utils` package.
 
 [.console-input]
 [source,bash,subs="attributes+,+macros"]
@@ -369,9 +369,9 @@ ztp-policies   du-sno-test-group-policy                   inform                
 
 In such cases it can be because of multiple errors. First, let's check that the policies are shown in the link:troubleshooting-tips.html#policies-blank[Governance console]. 
 
-If the policies show a warning message in the Cluster violations section, it is because the SNO servers are still being provisioned. You can double check the status of the provisioning in the Infrastructure -> Clusters section. Verify that there is not ztp-running label added yet.
+If the policies show a warning message in the Cluster violations section, it is because the SNO servers are still being provisioned. You can double check the status of the provisioning in the Infrastructure -> Clusters section. Verify that there is no ztp-running label added yet.
 
-In cases where the Governance console shows policies already assigned to SNO clusters, we should check the status of the TALM operator. Remember, that it is responsible of moving the policies from inform to enforce, so they are eventually applied. Check the status of the cluster-group-upgrades-controller-manager Pod and its logs:
+In cases where the Governance console shows policies already assigned to SNO clusters, we should check the status of the TALM operator. Remember, that it is responsible for moving the policies from inform to enforce, so they are eventually applied. Check the status of the cluster-group-upgrades-controller-manager Pod and its logs:
 
 [.console-input]
 [source,bash,subs="attributes+,+macros"]
@@ -467,7 +467,7 @@ status:
     startedAt: "2025-04-01T19:08:48Z"
 -----
 
-Verfiy that now there are two times the number of policies in the hub cluster. That's because a enforce copy of each one of them was created.
+Verify that now there are two times the number of policies in the hub cluster. That's because an enforce copy of each one of them was created.
 
 [.console-input]
 [source,bash,subs="attributes+,+macros"]

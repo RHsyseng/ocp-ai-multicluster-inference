@@ -41,7 +41,7 @@ As part of the lab deployment, a web application for accessing the lab environme
 - The left side of the app displays the lab content.
 - The right side of the app provides access to the lab environment. This section contains multiple tabs: one or more terminals for running commands, and a web browser for accessing various web consoles.
 
-The following image shows how the web app looks like:
+The following image shows what the web app looks like:
 
 image::showroom-app.png[Showroom App]
 

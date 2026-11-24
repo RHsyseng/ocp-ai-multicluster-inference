@@ -37,7 +37,7 @@ include::_attributes.adoc[]
 |Conflict-free Replicated Data Type
 
 |SWIM
-|Scalable Weakly-consistent Infenction-style Process Group Membership
+|Scalable Weakly-consistent Infection-style Process Group Membership
 
 |mTLS
 |Mutual TLS
