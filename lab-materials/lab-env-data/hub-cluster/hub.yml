@@ -7,6 +7,7 @@ domain: grid.lab
 api_ip: 192.168.125.10
 ingress_ip: 192.168.125.11
 disconnected: false
+manifests: manifests
 disk_size: 120
 extra_disks: [120]
 memory: 26000
@@ -19,9 +20,17 @@ users_dev: developer
 users_devpassword: CHANGE_DEV_PWD
 users_admin: admin
 users_adminpassword: CHANGE_ADMIN_PWD
+metallb_pool: gridlabnetwork
+metallb_range: 192.168.125.12-192.168.125.19
+metallb_autoassign: true
 apps:
-- users
-- openshift-gitops-operator
+- name: users
+- name: openshift-gitops-operator
+  catalog: pinned-redhat-operators
+  channel: latest
+- name: metallb-operator
+  catalog: pinned-redhat-operators
+  channel: stable
 vmrules:
 - hub-bootstrap:
     nets:

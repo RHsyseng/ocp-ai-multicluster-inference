@@ -1,0 +1,37 @@
+plan: inference-cluster2
+force: true
+version: stable
+tag: "4.22.23"
+cluster: "inference-cluster2"
+domain: grid.lab
+disconnected: false
+disk_size: 120
+extra_disks: [120]
+memory: 36000
+numcpus: 32
+ctlplanes: 1
+workers: 0
+sno_vm: true
+manifests: manifests
+metal3: true
+network: gridlabnetwork
+users_dev: developer
+users_devpassword: CHANGE_DEV_PWD
+users_admin: admin
+users_adminpassword: CHANGE_ADMIN_PWD
+metallb_pool: gridlabnetwork
+metallb_range: 192.168.125.51-192.168.125.55
+metallb_autoassign: true
+apps:
+- name: users
+- name: lvms-operator
+  catalog: pinned-redhat-operators
+  channel: stable-4.22
+- name: metallb-operator
+  catalog: pinned-redhat-operators
+  channel: stable
+vmrules:
+- inference-cluster2-sno:
+    nets:
+    - name: gridlabnetwork
+      mac: aa:aa:aa:aa:04:01
