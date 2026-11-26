@@ -23,7 +23,6 @@ spec:
         # Wipe bluestore from previous cluster
         wipeDevicesFromOtherClusters: true
         sanitizeDisks: {}
-    cephConfig: {}
     cephDashboard: {}
     cephFilesystems: {}
     cephNonResilientPools: {}
