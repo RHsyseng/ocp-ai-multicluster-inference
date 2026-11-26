@@ -22,12 +22,14 @@ spec:
       cleanupPolicy:
         # Wipe bluestore from previous cluster
         wipeDevicesFromOtherClusters: true
+        sanitizeDisks: {}
     cephConfig: {}
     cephDashboard: {}
     cephFilesystems: {}
     cephNonResilientPools: {}
     cephObjectStoreUsers: {}
-    cephObjectStores: {}
+    cephObjectStores:
+      enableSTS: true
     cephRBDMirror: {}
     cephToolbox: {}
   monDataDirHostPath: /var/lib/rook
