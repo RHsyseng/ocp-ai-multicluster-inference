@@ -39,7 +39,7 @@ spec:
   resourceProfile: balanced
   storageDeviceSets:
   - config: {}
-    count: 3
+    count: 1
     dataPVCTemplate:
       metadata: {}
       spec:
@@ -56,3 +56,39 @@ spec:
     preparePlacement: {}
     replica: 1
     resources: {}
+  resources:
+    mgr:
+      requests:
+        cpu: "1m"
+        memory: 1Mi
+    mds:
+      requests:
+        cpu: "1m"
+        memory: 1Mi
+    mon:
+      requests:
+        cpu: "1m"
+        memory: 1Mi
+    osd:
+      requests:
+        cpu: "1m"
+        memory: 1Mi
+    rgw:
+      requests:
+        cpu: "1m"
+        memory: 1Mi
+    noobaa-core:
+      requests:
+        cpu: "1m"
+        memory: 1Mi
+    noobaa-db:
+      requests:
+        cpu: "1m"
+        memory: 1Gi
+    noobaa-db-vol:
+      requests:
+        storage: 50Gi
+    noobaa-endpoint:
+      requests:
+        cpu: "1m"
+        memory: 1Mi
