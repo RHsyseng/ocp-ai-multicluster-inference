@@ -55,7 +55,10 @@ spec:
     placement: {}
     preparePlacement: {}
     replica: 1
-    resources: {}
+    resources:
+      requests:
+        cpu: "1m"
+        memory: 1Mi
   resources:
     mgr:
       requests:
@@ -66,10 +69,6 @@ spec:
         cpu: "1m"
         memory: 1Mi
     mon:
-      requests:
-        cpu: "1m"
-        memory: 1Mi
-    osd:
       requests:
         cpu: "1m"
         memory: 1Mi
@@ -84,10 +83,10 @@ spec:
     noobaa-db:
       requests:
         cpu: "1m"
-        memory: 1Gi
+        memory: 1Mi
     noobaa-db-vol:
       requests:
-        storage: 50Gi
+        storage: 30Gi
     noobaa-endpoint:
       requests:
         cpu: "1m"
