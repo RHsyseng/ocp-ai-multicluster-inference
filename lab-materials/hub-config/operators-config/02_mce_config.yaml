@@ -2,7 +2,7 @@ apiVersion: multicluster.openshift.io/v1
 kind: MultiClusterEngine
 metadata:
   annotations:
-    argocd.argoproj.io/sync-wave: "0"
+    argocd.argoproj.io/sync-wave: "2"
   name: multiclusterengine
 spec:
   availabilityConfig: Basic

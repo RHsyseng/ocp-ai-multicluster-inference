@@ -14,7 +14,7 @@ memory: 26000
 numcpus: 16
 ctlplanes: 3
 workers: 0
-metal3: true
+metal3: false
 network: gridlabnetwork
 users_dev: developer
 users_devpassword: CHANGE_DEV_PWD

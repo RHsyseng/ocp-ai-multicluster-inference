@@ -11,8 +11,8 @@ spec:
     server: 'https://kubernetes.default.svc'
   source:
     path: lab-materials/hub-config/operators-deployment
-    repoURL: 'http://infra.5g-deployment.lab:3000/student/5g-ran-deployments-on-ocp-lab.git'
-    targetRevision: lab-4.20
+    repoURL: 'http://infra.grid.lab:3000/student/ocp-ai-multicluster-inference.git'
+    targetRevision: lab-3.6
   project: default
   syncPolicy:
     automated:
@@ -31,23 +31,14 @@ metadata:
   name: hub-operators-config
   namespace: openshift-gitops
 spec:
-  ignoreDifferences:
-  - group: multicluster.openshift.io
-    jsonPointers:
-    - /spec/overrides/components
-    kind: MultiClusterEngine
-  - group: operator.open-cluster-management.io
-    jsonPointers:
-    - /spec/overrides/components
-    kind: MultiClusterHub
   destination:
     name: ''
     namespace: ''
     server: 'https://kubernetes.default.svc'
   source:
     path: lab-materials/hub-config/operators-config
-    repoURL: 'http://infra.5g-deployment.lab:3000/student/5g-ran-deployments-on-ocp-lab.git'
-    targetRevision: lab-4.20
+    repoURL: 'http://infra.grid.lab:3000/student/ocp-ai-multicluster-inference.git'
+    targetRevision: lab-3.6
   project: default
   syncPolicy:
     automated:
