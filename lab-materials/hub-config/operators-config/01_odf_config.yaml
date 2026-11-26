@@ -83,7 +83,7 @@ spec:
     noobaa-db:
       requests:
         cpu: "1m"
-        memory: 1Mi
+        memory: 256Mi
     noobaa-db-vol:
       requests:
         storage: 30Gi
